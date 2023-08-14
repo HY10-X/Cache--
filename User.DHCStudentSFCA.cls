@@ -385,7 +385,7 @@ ClassMethod DeleteData(StRowId As %String) As %String
 /// Table：DHC_StudentSFCA
 /// Inputh:St_RowId  必须要加条件否则删除所有数据
 /// output:0失败1成功
-/// others：w ##class(User.DHCStudentSFCA)GetList("3")
+/// others：w ##class(User.DHCStudentSFCA).GetList("3")
 ClassMethod GetList(StRowId As %String) As %String
 {
 	Quit:StRowId="" "rowid is null"
@@ -410,7 +410,7 @@ ClassMethod GetList(StRowId As %String) As %String
 /// Table：DHC_StudentSFCA
 /// Inputh:St_RowId  必须要加条件否则删除所有数据
 /// output:0失败1成功
-/// others：w ##class(User.DHCStudentSFCA)GetList("3") 
+/// others：w ##class(User.DHCStudentSFCA).GetListByPLIST("3") 
 ClassMethod GetListByPLIST(StRowId as%String) as %String{
 	Quit:StRowId="" "StRowId is null"
 	Quit:$DATA(^DHCSTUDENTSFCA(StRowId))=0 "data is null"
@@ -418,16 +418,34 @@ ClassMethod GetListByPLIST(StRowId as%String) as %String{
 		SELECT * INTO :PLIST()
 		FROM DHC_StudentSFCA
 		WHERE St_RowID=:StRowId
-
-
 	)
-	ZWrite PLIST
-
-
-
-
-
+	Set cnt=$ORDER(PLIST(""),-1) //取PLIST最大标号
+	For i=1:1:cnt{
+		Write " "
+		Write PLIST(i)
+	}
 }
+///function:使用面向对象的方法查询全部数据
+/// d ##class(User.DHCStudentSFCA).GetAllList()
+ClassMethod GetAllList() as %String{
+	Set sqlstr="SELECT * FROM DHC_StudentSFCA"
+	Set result=##class(%ResultSet).%New()
+	If (result){
+			Do result.Prepare(sqlstr)
+			Do result.Execute()
+			While(result.Next()){
+				Set StRowId=result.Data("St_RowId")
+				Set StCode=result.Data("St_Code")
+				Set StName=result.Data("St_Name")
+				Set StSexDR=result.Data("St_Sex_DR")
+				Set StDob=result.Data("St_Dob")
+				Set:StDob'="" StDob=$ZDATE(StDob,3)
+				Set:StSexDR'="" StSexDR=$PIECE(^CT("SEX",StSexDR),"^",2)
+				w "学号"_StCode_"姓名"_StName_"性别"_StSexDR_"出生日期"_StDob
+				w !
+			}
+	}
 
-
+	
+}
 }

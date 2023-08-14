@@ -1,5 +1,9 @@
 {
     "recommendations": [
-        "intersystems-community.vscode-objectscript"
+        "intersystems-community.vscode-objectscript",
+        "swifmobi.cacherelationship",
+        "intersystems.language-server",
+        "intersystems-community.servermanager",
+        "dsilin.mumps"
     ]
 }
