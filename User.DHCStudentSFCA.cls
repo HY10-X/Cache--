@@ -406,5 +406,28 @@ ClassMethod GetList(StRowId As %String) As %String
 		
 		}
 }
-///
+/// function:plist数据查询（一条）,但是字段很多，使用for循环输出plist
+/// Table：DHC_StudentSFCA
+/// Inputh:St_RowId  必须要加条件否则删除所有数据
+/// output:0失败1成功
+/// others：w ##class(User.DHCStudentSFCA)GetList("3") 
+ClassMethod GetListByPLIST(StRowId as%String) as %String{
+	Quit:StRowId="" "StRowId is null"
+	Quit:$DATA(^DHCSTUDENTSFCA(StRowId))=0 "data is null"
+	&sql(
+		SELECT * INTO :PLIST()
+		FROM DHC_StudentSFCA
+		WHERE St_RowID=:StRowId
+
+
+	)
+	ZWrite PLIST
+
+
+
+
+
+}
+
+
 }

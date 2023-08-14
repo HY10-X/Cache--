@@ -1,0 +1,123 @@
+<html>
+<head>
+<!--调用点击的js-->
+<script type='text/javascript' src='../scripts/dhceq/stat/dhceqcontractdetail.js'></script>
+
+<HISUI/>
+<!-- Put your page Title here 测试-->
+<title>	 测试 </title>
+
+</head>
+
+<body>
+
+<div id="tt2" class="hisui-tabs tabs-gray" style="width:500px;height:250px;">   
+	<div title="电子病历" style="padding:20px;">   
+		
+	</div>   
+	<div title="诊断录入" data-options="closable:true" style="overflow:auto;padding:20px;display:none;">   
+		tab2    
+	</div>   
+	<div title="医嘱录入" data-options="closable:true" style="padding:20px;display:none;">   
+		tab3    
+	</div>  
+	<div title="检查列表" data-options="closable:true" style="padding:20px;display:none;">   
+		tab3    
+	</div> 
+	<div title="检验列表" data-options="closable:true" style="padding:20px;display:none;">   
+		tab3    
+	</div> 
+	<div title="危急值列表" data-options="closable:true" style="padding:20px;display:none;">   
+		tab3    
+	</div> 
+</div>
+
+<div class="hisui-panel" title="病人信息" style="width:400px;padding:20px" data-options="headerCls:'panel-header-gray',iconCls:'icon-paper',closable:true,collapsible:true,minimizable:true,maximizable:true"></div>
+
+<div id="tt" class="hisui-accordion" style="width:500px;height:250px;">   
+	<div title="电子病历" style="padding:20px;">   
+		tab1    
+	</div>   
+	<div title="诊断录入" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">   
+		tab2    
+	</div>   
+	<div title="医嘱录入" data-options="closable:false" style="padding:20px;display:none;">   
+		tab3    
+	</div>
+
+	
+</div>
+<button  onclick="pwdname()">点击这里</button>  
+
+
+
+<script language="javascript">
+	/*  单击按钮alert1
+	$(function(){
+		$('#searchbtn').click(
+		function(){
+			alert(1)
+		})
+		
+		
+		
+		
+		})*/
+	//定义对象
+	function pwdname(){
+	var person1={name:"hyx",sex:"nan"};
+	var person2={name:"zs",sex:"nv"};
+	
+	var personJson={person:[
+	{name:"hyx",sex:"nan"},
+	{name:"lisi",sex:"nv"}
+	]};
+	alert(personJson.person[0].name);
+	//将json对象转换为json字符
+	var personstr=JSON.stringify(personJson);
+	alert(personstr);
+	
+	alert("test");
+
+}
+	
+	//点击监听
+	$(function(){
+	$HUI.tabs("#tt2",{
+		onSelect:function(title){
+			$.messager.popover({type:'info',msg:'切换到【'+title+'】'}); 					
+		}
+	});
+});	
+	
+	
+	</script>
+
+
+
+
+
+
+
+<!--a class="hisui-linkbutton" id="searchbtn" data-options="iconCls:'icon-search'">查询按钮</a>
+<a class="hisui-linkbutton" data-options="iconCls:'icon-reset'">重置按钮</a-->
+
+
+	<!--script language="javascript">
+	$(function(){
+		/*$('#searchbtn').click(
+		function(){
+			alert(1)
+		})*/
+		
+		
+		
+		
+		})
+	
+	
+	
+	
+	</script-->
+</body>
+</html>
