@@ -13,7 +13,7 @@ ClassMethod AddData(StCode As %String, StName As %String, StSexDR As %String, St
     Quit:(StCode="")||(StName="") "学号或姓名为空"
     Quit:$DATA(^DHCSTUDENTSFCA(0,"code",StCode))'=0 "学号重复" //$d为0时通过，为0代表值为空，子节点也为空,代表code索引中没有这个学号
    
-    Set:StDob'="" StDob=##class(websys.Conversions).DateHtmlToLogical(StDob) //标准转换日期接口 = $zdh(stdob,3)
+    Set:StDob'="" StDob=##class(websys.Conversions).DateHtmlToLogical(StDob) //标准转换日期接口 = $zdh(StDob,3)
  	Set oref=##class(User.DHCStudentSFCA).%New()
     If (oref){    //判断对象是否创建，还可以写做 (oref)
         Set oref.StCode=StCode
@@ -28,12 +28,37 @@ ClassMethod AddData(StCode As %String, StName As %String, StSexDR As %String, St
         }
         Else{
             Set result="add error"_$SYSTEM.OBJ.DISPLAYError(sc)   //显示错误信息 w $SYSTEM.Status.DISPLAYError
-
         }
-
     }
     Do oref.%Close()
     Quit result
+}
+/// 更新操作
+/// table：DHC_StudentSFCA
+/// input:StRowId,StName,StSexDR,StDob
+/// output:
+/// other:w ##class(web.Study.DaySixSFC).AddData("10","aa","1","2020-11-11")
+ClassMethod UpdateData(StRowId As %String, StName As %String, StSexDR As %String, StDob As %String)as %String {
+	q:(StRowId="") "rowid is null"
+	s:StDob'="" StDob=$zdg(StDob,3)
+	s obj=##class(User.DHCStudentSFCA).%OpenId(StRowId) //open obejct 
+	if (obj){
+		s obj.StName=StName
+		d obj.StSexDRSetobjectId(StSexDR)
+		s obj.StDob=StDob
+		TSTART		//引入事务
+		s sc=obj.%Save()	//save obj
+		if (sc=1){
+			TCOMMIT
+			s result=1
+		}
+		Else{
+			TROLLBACK
+			s result=0
+		}
+		d obj.%Close()
+		q result
+	}
 }
 
 }
