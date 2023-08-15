@@ -104,19 +104,46 @@ ClassMethod SaveData(StRowId As %String,StCode As %String, StName As %String, St
 /// output:
 /// other:w ##class(web.Study.DaySixSFC).OpenData("10")
 ClassMethod OpenData(StRowId AS %String) as %String{
-	q:StRowId="" "StRowId is null"
-	s obj=##class(User.DHCStudentSFCA).%OpenId(StRowId)
-	if (obj){
-		s StCode=obj.StCode
-		s StName=obj.StName
-		s:obj.StSexDR'="" StSexDR=obj.StSexDR.CTSEXDesc //指向表取性别描述,先取出obj中的指向数，再赋值给指向表获取性别指向值
-		s StDob=obj.StDob
-		s:StDob'="" StDob=$zd(StDob,3) //transfer Date
-		s result="学号："_StCode_"姓名："_StName_"性别:"_StSexDR_"出生日期:"_StDob
+	Quit:StRowId="" "StRowId is null"
+	Set obj=##class(User.DHCStudentSFCA).%OpenId(StRowId)
+	If (obj){
+		Set StCode=obj.StCode		//等同于obj.StCodeGet()
+		Set StName=obj.StName
+		Set:obj.StSexDR'="" StSexDR=obj.StSexDR.CTSEXDesc //指向表取性别描述,先取出obj中的指向数，再赋值给指向表获取性别指向值
+		//=obj.StSexDRGetObjectId	取性别指向表CT_SEX的的RowId 
+		Set StDob=obj.StDob
+		Set:StDob'="" StDob=$ZDATE(StDob,3) //transfer Date
+		Set result="学号："_StCode_"姓名："_StName_"性别:"_StSexDR_"出生日期:"_StDob
 	}
-	d obj.%Close()
-	q result
+	Do obj.%Close()
+	Quit result
 }
 
+
+///function:删除数据
+/// table：DHC_StudentSFCA
+/// input:StRowId（不为空）
+/// output:
+/// other:w ##class(web.Study.DaySixSFC).DeleteData("10")
+ClassMethod DeleteData(StRowId AS %String) as %String{
+	Quit:StRowId="" "rowid is null"
+	Set obj=##class(User.DHCStudentSFCA).%OpenId(StRowId)
+	If (obj){	//通过%OpenId判断数据是否存在
+	Tstart
+		Set sc=obj.%DeleteId(StRowId)	//通过%DeleteId删除数据
+		If (sc=1){
+			Set result="success"
+			Tcommit
+		}
+		Else{
+			Trollback
+			Set result="error"_$SYSTEM.Status.DISPLAYError(sc)
+		}
+		Do obj.%Close()
+	}
+	Else{
+		Set result="数据不存在"
+	}
+}
 
 }
