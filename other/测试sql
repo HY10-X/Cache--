@@ -1,0 +1,30 @@
+SELECT * FROM DHC_StudentSFC
+
+INSERT INTO DHC_StudentSFC VALUES('2','lisi','2','2120-01-01','Y')
+
+UPDATE DHC_StudentSFC SET St_Name ="lisi" WHERE St_RowId = 2
+
+TRUNCATE TABLE DHC_StudentSFC
+
+
+
+
+
+SELECT * FROM DHC_StudentSFCA
+
+INSERT INTO DHC_StudentSFCA VALUES('789','lisi','2','2120-01-01')
+insert into DHC_StudentSFCA VALUES('004','AAA','1','2000-01-20')
+DELETE FROM DHC_StudentSFCA WHERE St_RowId=9
+TRUNCATE TABLE DHC_StudentSFCA
+
+
+
+
+SELECT * FROM DHC_CourseSFC
+
+INSERT INTO DHC_CourseSFC VALUES('3','english','Y')
+
+
+
+SELECT * FROM MRC_ICDDx
+
