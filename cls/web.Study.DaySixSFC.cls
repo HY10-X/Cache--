@@ -46,14 +46,14 @@ ClassMethod UpdateData(StRowId As %String, StName As %String, StSexDR As %String
 		Set obj.StName=StName
 		Do obj.StSexDRSetobjectId(StSexDR)
 		Set obj.StDob=StDob
-		TSTART		//引入事务
+		Tstart		//引入事务
 		Set sc=obj.%Save()	//save obj
 		If (sc=1){
-			TCOMMIT
+			Tcommit
 			Set result=1
 		}
 		Else{
-			TROLLBACK
+			Trollback
 			Set result=0
 		}
 		Do obj.%Close()
@@ -64,8 +64,8 @@ ClassMethod UpdateData(StRowId As %String, StName As %String, StSexDR As %String
 ///function:数据保存 新增与修改合并方法
 ///input:StRowId为空默认新增，不为空默认为更新数据
 ClassMethod SaveData(StRowId As %String,StCode As %String, StName As %String, StSexDR As %String, StDob As %String){
-	q:StCode="" "stcode is null"
-	q:StName="" "stname is null"
+	Quit:StCode="" "StCode is null"
+	Quit:StName="" "StName is null"
 	If (StRowId="") {	//新增
 	Quit:$DATA(^DHCSTUDENTSFCA(0,"code",StCode))'=0 "学号重复" //$d为0时通过，为0代表值为空，子节点也为空,代表code索引中没有这个学号
 		Set oref=##class(User.DHCStudentSFCA).%New()
@@ -80,24 +80,43 @@ ClassMethod SaveData(StRowId As %String,StCode As %String, StName As %String, St
 		Set oref.StName=StName
 		Do oref.StSexDRSetObjectId(StSexDR)	//性别使用SetObjectId赋值
 		Set sc=oref.%save()
-		TSTART
+		Tstart
 	}
 
 	 If ($$$ISOK(sc)){    //(sc=1)判断保存是否为空,保存是否成功
-        TCOMMIT
+        Tcommit
         Set StRowId=oref.%Id()
         Set result="add success"_StRowId
         }
 
     Else{
-		TROLLBACK
+		Trollback
          Set result="add error"_$SYSTEM.OBJ.DISPLAYError(sc)   //显示错误信息 w $SYSTEM.Status.DISPLAYError
         }
 
-    d oref.%Close()
-	q result
+    Do oref.%Close()
+	Quit result
 	}
 
+///function:查询数据，取出数据
+/// table：DHC_StudentSFCA
+/// input:StRowId（不为空）
+/// output:
+/// other:w ##class(web.Study.DaySixSFC).OpenData("10")
+ClassMethod OpenData(StRowId AS %String) as %String{
+	q:StRowId="" "StRowId is null"
+	s obj=##class(User.DHCStudentSFCA).%OpenId(StRowId)
+	if (obj){
+		s StCode=obj.StCode
+		s StName=obj.StName
+		s:obj.StSexDR'="" StSexDR=obj.StSexDR.CTSEXDesc //指向表取性别描述,先取出obj中的指向数，再赋值给指向表获取性别指向值
+		s StDob=obj.StDob
+		s:StDob'="" StDob=$zd(StDob,3) //transfer Date
+		s result="学号："_StCode_"姓名："_StName_"性别:"_StSexDR_"出生日期:"_StDob
+	}
+	d obj.%Close()
+	q result
+}
 
 
 }
