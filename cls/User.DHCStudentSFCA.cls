@@ -5,6 +5,9 @@
 Class User.DHCStudentSFCA Extends %Persistent [ SqlTableName = DHC_StudentSFCA, StorageStrategy = NewStorage1 ]
 {
 
+/// 父表中定义子表关系
+Relationship ChildCourse As DHCStudentCourseSFCA [ Cardinality = children, Inverse = DHCParRef ];
+
 /// 学号St_Code	重命名列名[SqlFieldName = St_Code ] 
 /// 排序列名，rowid默认第一列,所以从第二列开始，SqlColumnNumber=
 Property StCode As %String [ SqlColumnNumber = 2, SqlFieldName = St_Code ];
@@ -406,12 +409,14 @@ ClassMethod GetList(StRowId As %String) As %String
 		
 		}
 }
+
 /// function:plist数据查询（一条）,但是字段很多，使用for循环输出plist
 /// Table：DHC_StudentSFCA
 /// Inputh:St_RowId  必须要加条件否则删除所有数据
 /// output:0失败1成功
 /// others：w ##class(User.DHCStudentSFCA).GetListByPLIST("3") 
-ClassMethod GetListByPLIST(StRowId as%String) as %String{
+ClassMethod GetListByPLIST(StRowId As %String) As %String
+{
 	Quit:StRowId="" "StRowId is null"
 	Quit:$DATA(^DHCSTUDENTSFCA(StRowId))=0 "data is null"
 	&sql(
@@ -425,9 +430,11 @@ ClassMethod GetListByPLIST(StRowId as%String) as %String{
 		Write PLIST(i)
 	}
 }
-///function:使用面向对象的方法查询全部数据
+
+/// function:使用面向对象的方法查询全部数据
 /// d ##class(User.DHCStudentSFCA).GetAllList()
-ClassMethod GetAllList() as %String{
+ClassMethod GetAllList() As %String
+{
 	Set sqlstr="SELECT * FROM DHC_StudentSFCA"
 	Set result=##class(%ResultSet).%New()
 	If (result){
@@ -445,7 +452,6 @@ ClassMethod GetAllList() as %String{
 				w !
 			}
 	}
-
-	
 }
+
 }
