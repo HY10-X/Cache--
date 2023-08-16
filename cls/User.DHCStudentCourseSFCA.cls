@@ -9,7 +9,7 @@ Class User.DHCStudentCourseSFCA Extends %Persistent [ SqlTableName = DHC_Student
 Relationship DHCScParRef As DHCStudentSFCA [ Cardinality = parent, Inverse = ChildCourse, SqlFieldName = DHC_ScParRef ];
 
 /// 创建childsub
-Property DHCScChildSub As %Numeric(SCALE = 0) [ InitialExpression = {$INCREMENT(^DHCCOURSESFCA(+$SELECT($DATA(initvalue):initvalue,1:%d(0)),"Course","0"))}, Required, SqlColumnNumber = 2, SqlFieldName = DHC_ScChildSub ];
+Property DHCScChildSub As %Numeric [ InitialExpression = {$i(^DHCCOURSESFCA(+$s(initvalue:initvalue,1:%d(0)),"Course","0"))}, Required, SqlColumnNumber = 2, SqlFieldName = DHC_ScChildSub ];
 
 /// 课程变量
 Property DHCScCourseDR As DHCCourseSFC [ SqlColumnNumber = 3, SqlFieldName = DHC_ScCourse_DR ];
