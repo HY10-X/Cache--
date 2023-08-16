@@ -28,3 +28,11 @@ INSERT INTO DHC_CourseSFC VALUES('3','english','Y')
 
 SELECT * FROM MRC_ICDDx
 
+
+SELECT * FROM DHC_StudentCourseSFCA
+
+
+INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALUES('4','1','80')
+INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALUES('3','11','80')
+INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALUES('10','111','80')
+INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALUES('11','1111','80')
