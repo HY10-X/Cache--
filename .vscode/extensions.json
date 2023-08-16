@@ -4,6 +4,7 @@
         "swifmobi.cacherelationship",
         "intersystems.language-server",
         "intersystems-community.servermanager",
-        "dsilin.mumps"
+        "dsilin.mumps",
+        "codeinchinese.englishchinesedictionary"
     ]
 }

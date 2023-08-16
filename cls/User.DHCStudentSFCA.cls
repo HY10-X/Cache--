@@ -448,8 +448,8 @@ ClassMethod GetAllList() As %String
 				Set StDob=result.Data("St_Dob")
 				Set:StDob'="" StDob=$ZDATE(StDob,3)
 				Set:StSexDR'="" StSexDR=$PIECE(^CT("SEX",StSexDR),"^",2)
-				w "学号"_StCode_"姓名"_StName_"性别"_StSexDR_"出生日期"_StDob
-				w !
+				Write "学号"_StCode_"姓名"_StName_"性别"_StSexDR_"出生日期"_StDob
+				Write !
 			}
 	}
 }
