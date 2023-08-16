@@ -2,7 +2,6 @@
 /// 创建日期：2023年8月15日
 /// 创建人：houyuxuan
 /// 字段：StSc_RowId,DHCScCourseDR,DHCScScore
-/// method：d ##class(User.DHCStudentCourseSFCA).%BuildIndices()
 Class User.DHCStudentCourseSFCA Extends %Persistent [ SqlTableName = DHC_StudentCourseSFCA, StorageStrategy = NewStorage1 ]
 {
 
@@ -33,7 +32,7 @@ Storage NewStorage1
 <Delimiter>"^"</Delimiter>
 <Piece>2</Piece>
 </Data>
-<Global>^DHCCOURSESFCA</Global>
+<Global>^DHCSTUDENTSFCA</Global>
 <RowIdSpec name="1">
 <Expression>{L1}</Expression>
 <Field>DHC_StudentSFCA.St_RowId</Field>
