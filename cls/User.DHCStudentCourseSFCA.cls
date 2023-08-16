@@ -2,6 +2,7 @@
 /// 创建日期：2023年8月15日
 /// 创建人：houyuxuan
 /// 字段：StSc_RowId,DHCScCourseDR,DHCScScore
+/// method：d ##class(User.DHCStudentCourseSFCA).%BuildIndices()
 Class User.DHCStudentCourseSFCA Extends %Persistent [ SqlTableName = DHC_StudentCourseSFCA, StorageStrategy = NewStorage1 ]
 {
 
@@ -23,6 +24,7 @@ Index IndexName On DHCScChildSub [ IdKey, PrimaryKey, Unique ];
 Storage NewStorage1
 {
 <SQLMap name="DataMaster">
+<ConditionalWithHostVars></ConditionalWithHostVars>
 <Data name="DHC_ScCourse_DR">
 <Delimiter>"^"</Delimiter>
 <Piece>1</Piece>
@@ -52,6 +54,35 @@ Storage NewStorage1
 <StartValue>1</StartValue>
 </Subscript>
 <Type>data</Type>
+</SQLMap>
+<SQLMap name="IndexCourseDR">
+<ConditionalWithHostVars></ConditionalWithHostVars>
+<Global>^DHCCOURSESFCA</Global>
+<PopulationType>nonnull</PopulationType>
+<RowIdSpec name="1">
+<Expression>{L4}</Expression>
+<Field>DHC_StudentSFCA.St_RowId</Field>
+</RowIdSpec>
+<RowIdSpec name="2">
+<Expression>{L5}</Expression>
+<Field>DHC_ScChildSub</Field>
+</RowIdSpec>
+<Subscript name="1">
+<Expression>0</Expression>
+</Subscript>
+<Subscript name="2">
+<Expression>"CourseDR"</Expression>
+</Subscript>
+<Subscript name="3">
+<Expression>{DHC_ScCourse_DR}</Expression>
+</Subscript>
+<Subscript name="4">
+<Expression>{DHC_StudentSFCA.St_RowId}</Expression>
+</Subscript>
+<Subscript name="5">
+<Expression>{DHC_ScChildSub}</Expression>
+</Subscript>
+<Type>index</Type>
 </SQLMap>
 <SqlRowIdName>StSc_RowId</SqlRowIdName>
 <StreamLocation>^User.DHCStudentCourseSFCAS</StreamLocation>
