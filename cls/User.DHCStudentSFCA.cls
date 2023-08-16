@@ -6,7 +6,7 @@ Class User.DHCStudentSFCA Extends %Persistent [ SqlTableName = DHC_StudentSFCA, 
 {
 
 /// 父表中定义子表关系
-Relationship ChildCourse As DHCStudentCourseSFCA [ Cardinality = children, Inverse = DHCParRef ];
+Relationship ChildCourse As DHCStudentCourseSFCA [ Cardinality = children, Inverse = DHCScParRef];
 
 /// 学号St_Code	重命名列名[SqlFieldName = St_Code ] 
 /// 排序列名，rowid默认第一列,所以从第二列开始，SqlColumnNumber=

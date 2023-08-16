@@ -6,16 +6,16 @@ Class User.DHCStudentCourseSFCA Extends %Persistent [ SqlTableName = DHC_Student
 {
 
 /// 子表中定义父表	
-Relationship DHCParRef As DHCStudentSFCA [ Cardinality = parent, Inverse = ChildCourse ];
+Relationship DHCScParRef As DHCStudentSFCA [ Cardinality = parent, Inverse = ChildCourse, SqlFieldName = DHC_ScParRef ];
 
 /// 创建childsub
-Property DHCScChildSub As %Numeric [ InitialExpression = {$INCREMENT(^DHCCOURSESFCA(+$SELECT(initvalue:initvalue,1:%d(0)),"Course","0"))}, Required, SqlColumnNumber = 2, SqlFieldName = DHC_ScChildSub ];
+Property DHCScChildSub As %Numeric(SCALE = 0) [ InitialExpression = {$INCREMENT(^DHCCOURSESFCA(+$SELECT($DATA(initvalue):initvalue,1:%d(0)),"Course","0"))}, Required, SqlColumnNumber = 2, SqlFieldName = DHC_ScChildSub ];
 
 /// 课程变量
 Property DHCScCourseDR As DHCCourseSFC [ SqlColumnNumber = 3, SqlFieldName = DHC_ScCourse_DR ];
 
 /// 成绩
-Property DHCScScore As %Integer [ SqlColumnNumber = 4, SqlFieldName = DHCScScore ];
+Property DHCScScore As %Integer [ SqlColumnNumber = 4, SqlFieldName = DHC_ScScore ];
 
 /// 给childsub定义索引
 Index IndexName On DHCScChildSub [ IdKey, PrimaryKey, Unique ];
@@ -23,13 +23,13 @@ Index IndexName On DHCScChildSub [ IdKey, PrimaryKey, Unique ];
 Storage NewStorage1
 {
 <SQLMap name="DataMaster">
-<Data name="DHCScScore">
-<Delimiter>"^"</Delimiter>
-<Piece>2</Piece>
-</Data>
 <Data name="DHC_ScCourse_DR">
 <Delimiter>"^"</Delimiter>
 <Piece>1</Piece>
+</Data>
+<Data name="DHC_ScScore">
+<Delimiter>"^"</Delimiter>
+<Piece>2</Piece>
 </Data>
 <Global>^DHCCOURSESFCA</Global>
 <RowIdSpec name="1">
