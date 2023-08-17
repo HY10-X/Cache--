@@ -2,7 +2,8 @@
 /// createdate：2023年8月16日
 /// input:RowId
 /// output:No Name Gender Birthday(%String,%String,%String(0,1,2),%Date)
-/// otehr:
+/// otehr:重建索引_d ##class(User.DHCStudentHYX).%BuildIndices()
+/// 
 Class User.DHCStudentHYX Extends %Persistent [ SqlTableName = DHC_StudentHYX, StorageStrategy = NewStorage1 ]
 {
 
@@ -22,6 +23,7 @@ Storage NewStorage1
 {
 <SqlIdExpression>$I(^DHCSTUDENTHYX(0))</SqlIdExpression>
 <SQLMap name="DataMaster">
+<ConditionalWithHostVars></ConditionalWithHostVars>
 <Data name="St_Birthday">
 <Delimiter>"^"</Delimiter>
 <Piece>4</Piece>
@@ -48,6 +50,28 @@ Storage NewStorage1
 <StartValue>1</StartValue>
 </Subscript>
 <Type>data</Type>
+</SQLMap>
+<SQLMap name="GenderIndex">
+<ConditionalWithHostVars></ConditionalWithHostVars>
+<Global>^DHCSTUDENTHYX</Global>
+<PopulationType>nonnull</PopulationType>
+<RowIdSpec name="1">
+<Expression>{L4}</Expression>
+<Field>St_RowId</Field>
+</RowIdSpec>
+<Subscript name="1">
+<Expression>0</Expression>
+</Subscript>
+<Subscript name="2">
+<Expression>"Gender"</Expression>
+</Subscript>
+<Subscript name="3">
+<Expression>{St_Gender}</Expression>
+</Subscript>
+<Subscript name="4">
+<Expression>{St_RowId}</Expression>
+</Subscript>
+<Type>index</Type>
 </SQLMap>
 <SqlRowIdName>St_RowId</SqlRowIdName>
 <StreamLocation>^User.DHCStudentHYXS</StreamLocation>
