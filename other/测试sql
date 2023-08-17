@@ -41,5 +41,6 @@ INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALU
 
 SELECT * FROM DHC_StudentHYX
 INSERT INTO DHC_StudentHYX values('1','张三','0','2000-01-01')
+INSERT INTO DHC_StudentHYX values('1','张三男','1','2000-01-01')
 INSERT INTO DHC_StudentHYX values('2','李四','1','2000-02-02')
 INSERT INTO DHC_StudentHYX values('3','王五','2','2000-03-03')
