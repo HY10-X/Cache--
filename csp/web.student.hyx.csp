@@ -1,96 +1,72 @@
-	<!DOCTYPE html>  
-	<html>  
-	<head>  
-		<title>学生信息查询</title>  
-		<style>  
-			body {  
-				font-family: Arial, sans-serif;  
-				margin: 0;  
-				padding: 20px;  
-			}  
-			h1 {  
-				text-align: center;  
-			}  
-			table {  
-				width: 100%;  
-				border-collapse: collapse;  
-			}  
-			th, td {  
-				padding: 10px;  
-				border-bottom: 1px solid #9bbafa;  
-			}  
-			input[type="text"], select {  
-				width: 30%;  
-				padding: 10px;  
-				margin-bottom: 10px;  
-			}  
-			button {  
-				padding: 10px 20px;  
-				background-color: #9bbafa;  
-				color: white;  
-				border: none;  
-				cursor: pointer;  
-			}  
-			button:hover {  
-				background-color: #9bbafa;  
-			}  
-		</style>  
-	</head>  
-	<body>  
-		<h1>学生信息查询</h1>  
-		<form id="searchForm">  
-			<input type="text" id="nameInput" placeholder="姓名">  
-			<select id="genderSelect">  
-				<option value="male">男</option>  
-				<option value="female">女</option>  
-				<option value="unknown">未知性别</option>  
-			</select>  
-			<button type="button" id="searchButton">查询</button>  
-			<button type="button" id="addButton">新增</button>  
-			<button type="button" id="deletButton">删除</button>  
-		</form>  
-		<table id="resultTable">  
-			<thead>  
-				<tr>  
-					<th>RowId</th>  
-					<th>学号</th>  
-					<th>姓名</th>  
-					<th>性别</th>  
-					<th>出生日期</th>  
-					<th></th>  
-					<th></th>  
-					<th></th>  
-				</tr>  
-			</thead>  
-			<tbody id="resultBody"></tbody>  
-		</table>  
-		<script text="javascript">
-			// 假设这些是学生信息的数组，实际情况中需要根据您的数据源进行修改和扩展  
-	const students = [  
-		{ rowId: 1, studentId: 'S001', name: '张三', gender: 'male', birthDate: '2022-01-01' },  
-		{ rowId: 2, studentId: 'S002', name: '李四', gender: 'female', birthDate: '2022-02-01' },  
-		{ rowId: 3, studentId: 'S003', name: '王五', gender: 'unknown', birthDate: '2022-03-01' }  
-	];  
-	
-	const searchButton = document.getElementById('searchButton');  
-	const addButton = document.getElementById('addButton');  
-	const resultTable = document.getElementById('resultTable');  
-	const resultBody = document.getElementById('resultBody');  
-	const nameInput = document.getElementById('nameInput');  
-	const genderSelect = document.getElementById('genderSelect');  
-	
-	// 查询学生信息函数  
-	function searchStudents() {  
-		const name = nameInput.value.trim();  
-		const gender = genderSelect.value.trim();  
-		const filteredStudents = students.filter(student => {  
-			return student.name === name && student.gender === gender;  
-		});  
-		clearTable(); // 清空表格内容  
-		if (filteredStudents.length === 0) {  
-			resultBody.insertRow(0).insertCell(0).innerText = '没有符合条件的学生信息'; // 插入一行提示信息，如果没有符合条件的学生信息时显示该行。根据实际情况调整。 如果你不需要这个提示，可以注释掉这行代码。 如果你需要更复杂的查询条件，可以修改 filter 函数中的条件表达式。 如果你需要异步查询
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>学生信息查询</title>  
+    <style>  
+        body {  
+            font-family: Arial, sans-serif;  
+            margin: 0;  
+            padding: 20px;  
+        }  
+        h1 {  
+            text-align: center;  
+        }  
+        table {  
+            width: 100%;  
+            border-collapse: collapse;  
+        }  
+        th, td {  
+            padding: 10px;  
+            border-bottom: 1px solid #9bbafa;  
+        }  
+        input[type="text"], select {  
+            width: 30%;  
+            padding: 10px;  
+            margin-bottom: 10px;  
+        }  
+        button {  
+            padding: 10px 20px;  
+            background-color: #9bbafa;  
+            color: white;  
+            border: none;  
+            cursor: pointer;  
+        }  
+        button:hover {  
+            background-color: #9bbafa;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <h1>学生信息查询</h1>  
+    <form id="searchForm">  
+        <input type="text" id="nameInput" placeholder="姓名">  
+        <select id="genderSelect">  
+            <option value="male">男</option>  
+            <option value="female">女</option>  
+            <option value="unknown">未知性别</option>  
+        </select>  
+        <button type="button" id="searchButton">查询</button>  
+        <button type="button" id="addButton">新增</button>  
+		<button type="button" id="deletButton">删除</button>  
+    </form>  
+    <table id="resultTable">  
+        <thead>  
+            <tr>  
+                <th>RowId</th>  
+                <th>学号</th>  
+                <th>姓名</th>  
+                <th>性别</th>  
+                <th>出生日期</th>  
+                <th></th>  
+                <th></th>  
+                <th></th>  
+            </tr>  
+        </thead>  
+        <tbody id="resultBody"></tbody>  
+    </table>  
+    <script language="javascript">
 
-			
-		</script>  
-	</body>  
-	</html>
+		
+	</script>  
+</body>  
+</html>
