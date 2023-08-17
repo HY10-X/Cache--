@@ -1,9 +1,8 @@
 /// creator:候宇轩 
 /// createdate：2023年8月16日
 /// input:RowId
-/// output:No Name Gender Birthday(%String,%String,%String(0,1,2),%Date)
+/// output:StNo StName StGender StBirthday(%String,%String,%String(0,1,2),%Date)
 /// otehr:重建索引_d ##class(User.DHCStudentHYX).%BuildIndices()
-/// 
 Class User.DHCStudentHYX Extends %Persistent [ SqlTableName = DHC_StudentHYX, StorageStrategy = NewStorage1 ]
 {
 
@@ -78,4 +77,36 @@ Storage NewStorage1
 <Type>%CacheSQLStorage</Type>
 }
 
+/*业务层：BLStudent，定义增删改查方法*/
+
+/// function:根据姓名、性别查询数据，为空时输出所有数据
+/// creator:候宇轩 
+/// createdate：2023年8月16日
+/// input:StName,StGender
+/// output:StNo StName StGender StBirthday(%String,%String,%String(0,1,2),%Date)
+/// table:DHCSTUDENTHYX
+/// otehr:d ##class(User.DHCStudentHYX).GetStudentByNameGender()
+ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %String
+{   
+    if (StName=""){
+        if (StGender=""){
+            s RowId=0
+            for{
+               s RowId=$o(^DHCSTUDENTHYX(RowId)) 
+               q:RowId=""
+               s DataStr=$g(^DHCSTUDENTHYX(RowId))
+               s StNo=$p(DataStr,"^",1)
+               s StName=$p(DataStr,"^",2)
+               s StGender=$p(DataStr,"^",3)
+               //日期转换，将指定格式字符转换为日期格式
+               s StBirthday=""
+               s StBirthday=$p(DataStr,"^",4)
+               s:StBirthday'="" StBirthday=$zd(StBirthday,3)
+               
+               w RowId_"学号："_StNo_"姓名："_StName_"性别："_StGender_"日期："_StBirthday_""	
+               w !
+            }
+        }
+    }
+}
 }
