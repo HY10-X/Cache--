@@ -184,4 +184,68 @@ ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %St
          }
     }
 }
+
+/// function:编写使用query
+/// input:RowId,Code,Name
+/// others: d ##class(%ResultSet).RunQuery("User.DHCStudentSFCA","GetList","2")
+Query GetList(Code As %String) As %Query(ROWSPEC = "StRowId:%String,StCode:%String,StName:%String,StSexDR:%String,StDob:%String")
+{
+}
+
+ClassMethod GetListExecute(ByRef qHandle As %Binary, Code As %String) As %Status
+{
+	set repid=$I(^CacheTemp)
+	set ind=1
+	///StRowId,StCode,StName,StSexDR,StDob
+	set StRowId=0
+	for{
+		set StRowId=$o(^DHCSTUDENTSFCA(StRowId)) q:StRowId=""
+		set StCode=$p($g(^DHCSTUDENTSFCA(StRowId)),"^",1)
+		set StName=$p($g(^DHCSTUDENTSFCA(StRowId)),"^",2)
+		set StSexDR=$p($g(^DHCSTUDENTSFCA(StRowId)),"^",3)	///取性别描述
+		set:StSexDR'="" StSexDR=$p($g(^CT("SEX",StSexDR)),"^",2)
+		set StDob=$p($g(^DHCSTUDENTSFCA(StRowId)),"^",4) 
+		set:StDob'="" StDob=$zd(StDob,3)
+			///[包含
+			///输出至CacheTemp
+		if (StCode[Code){
+			set ^Cachetmp(repid,ind)=$lb(StRowId,StCode,StName,StSexDR,StDob)
+			set ind=ind+1
+		
+		}
+		
+		
+		
+	}
+	set qHandle=$lb(0,repid,0)
+	quit $$$OK
+}
+
+ClassMethod GetListFetch(ByRef qHandle As %Binary, ByRef Row As %List, ByRef AtEnd As %Integer = 0) As %Status
+{
+	set AtEnd=$LIST(qHandle,1)
+	set repid=$LIST(qHandle,2)
+	set ind=$LIST(qHandle,3)
+	
+	set ind=$o(^CacheTemp(repid,ind))
+	if ind=""{
+		set AtEnd=1
+		set Row=""
+		}
+	else{
+		set Row=^CacheTemp(repid,ind)
+		}	
+	set qHandle=$lb(AtEnd,repid,ind)
+	quit $$$OK
+}
+
+ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = GetListExecute ]
+{
+	
+	Set repid=$LIST(qHandle,2)
+	kill ^CacheTemp(repid)
+	Quit $$$OK
+}
+
+
 }
