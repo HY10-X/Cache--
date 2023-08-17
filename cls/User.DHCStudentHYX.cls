@@ -123,12 +123,37 @@ ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %St
                 w RowId_"学号："_StNo_"姓名："_StName_"性别："_StGender_"日期："_StBirthday_""	
                 w !  
                 }
-               
-        
-                
+        }   
+    }
+    else{   
+         if (StGender=""){  //姓名不为空，性别为空，根据姓名查找 input:StName
+            //添加
+             s RowId=0
+             for{    
+               s RowId=$o(^DHCSTUDENTHYX(RowId)) 
               
-             
-        }
+               q:RowId=""   //遍历到最后时跳出
+               if ($d(^DHCSTUDENTHYX(RowId))=0){    //不存在数据跳出
+                    w "数据不存在"
+                    quit
+               }
+               s DataStr=$g(^DHCSTUDENTHYX(RowId))
+               s StNo=$p(DataStr,"^",1)
+               s StNameTemp=$p(DataStr,"^",2)
+               s StGender=$p(DataStr,"^",3)
+               //日期转换，将指定格式字符转换为日期格式
+               s StBirthday=""
+               s StBirthday=$p(DataStr,"^",4)
+               s:StBirthday'="" StBirthday=$zd(StBirthday,3)
+               
+              if (StName=StNameTemp)||(StNameTemp=""){
+				    w RowId_"学号："_StNo_"姓名："_StName_"性别："_StGender_"日期："_StBirthday_""	
+				    w !
+				}    
+            }
+
+
+         }
     }
 }
 }
