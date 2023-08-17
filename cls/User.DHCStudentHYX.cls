@@ -219,5 +219,6 @@ ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = Get
 	Quit $$$OK
 }
 
-}
+
+
 }

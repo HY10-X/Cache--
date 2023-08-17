@@ -37,7 +37,7 @@ INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALU
 INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALUES('10','111','80')
 INSERT INTO DHC_StudentCourseSFCA(DHC_ScParRef,DHC_ScCourse_DR,DHC_ScScore) VALUES('11','1111','80')
 
-
+帮我用html编写一个页面，以便查询RowId，学号、姓名、性别、出生日期，查询出来的结果放在表格中，包含一个姓名输入框，一个性别下拉框，下拉内容包括男，女，未知性别，还有一个查询按钮、一个新增按钮、一个删除按钮，一个修改按钮，界面要美观好看
 
 SELECT * FROM DHC_StudentHYX
 INSERT INTO DHC_StudentHYX values('1','张三','0','2000-01-01')
