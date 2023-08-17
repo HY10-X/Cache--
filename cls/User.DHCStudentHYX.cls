@@ -186,39 +186,68 @@ ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %St
 }
 
 /// function:编写使用query
-/// input:RowId,Code,Name
+/// input:RowId,StNo,StName
 /// GetList:入参、GetListExecute：执行，GetListFetch：从执行取数据出参，GetListClose：关闭临时global
-/// others:d ##class(%ResultSet).RunQuery("User.DHCStudentSFCA","GetList")
-Query GetList() As %query(ROWSPEC = "")
+/// others:d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList","1")
+Query GetList(No As %String) As %Query(ROWSPEC = "StRowId:%String,StNo:%String,StName:%String,StGender:%String,StBirthday:%Date")
 {
 }
 
-ClassMethod GetListExecute(ByRef qHandle As %Binary) As %Status
+ClassMethod GetListExecute(ByRef qHandle As %Binary, No As %String) As %Status
 {
-	s repid=$i(^CacheTemp)
-	s ind=1
+	Set repid=$INCREMENT(^CacheTemp)
+	Set ind=1
+	Set StRowId=0
+	For{
+		Set StRowId=$ORDER(^DHCSTUDENTHYX(StRowId)) Quit:StRowId=""
+		Set StNo=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",1)
+		Set StName=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",2)
+		Set StGender=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",3)	///取性别描述
+		Set StBirthday=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",4) 
+		Set:StBirthday'="" StBirthday=$ZDATE(StBirthday,3)
+			///[包含
+			///输出至CacheTemp
+            
+		If (StNo[No){
+			Set data=$LISTBUILD(StRowId,StNo,StName,StGender,StBirthday)
+			Set ^CacheTemp(repid,ind)=data
+			Set ind=ind+1
+		
+		}
+		
+	}
 	
-	s qHandle=$lb(0,repid,0)
-	quit $$$OK
-OutputRow2
-	s Data=$lb()
-	s ^Cachetmp(repid,ind)=Data
-	s ind=ind+1
-	quit
+	Set qHandle=$LISTBUILD(0,repid,0)
+		
+	Quit $$$OK
 }
 
 ClassMethod GetListFetch(ByRef qHandle As %Binary, ByRef Row As %List, ByRef AtEnd As %Integer = 0) As %Status
 {
-}
-
-ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = GetStudentDataExecute ]
-{
-	
+	Set AtEnd=$LIST(qHandle,1)
 	Set repid=$LIST(qHandle,2)
-	kill ^CacheTemp(repid)
+	Set ind=$LIST(qHandle,3)
+	
+	Set ind=$ORDER(^CacheTemp(repid,ind))
+	If ind=""{
+		Set AtEnd=1
+		Set Row=""
+		}
+	Else{
+		Set Row=^CacheTemp(repid,ind)
+		}	
+		
+	Set qHandle=$LISTBUILD(AtEnd,repid,ind)
+
 	Quit $$$OK
 }
 
-
+ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = GetListExecute ]
+{
+	
+	Set repid=$LIST(qHandle,2)
+	Kill ^CacheTemp(repid)
+	Quit $$$OK
+}
 
 }
