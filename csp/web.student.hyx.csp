@@ -1,0 +1,28 @@
+<html>
+<head>
+
+<!-- Put your page Title here -->
+<title>	Cache Server Page </title>
+
+</head>
+
+<body>
+<form action="web.student.hyx.csp" method="post">
+学号：<input type="text" id="StNo" name="StNo">
+<input type="submit" value="搜索" id="Search">
+</form>
+
+<table style="width: 100%;">
+<tr><td>StRowId</td><td>学号</td><td>姓名</td><td>性别</td><td>出生日期</td></tr>
+<tr>
+	<td>StRowId</td><td>学号</td><td>姓名</td><td>性别</td><td>出生日期</td></tr>
+</tr>
+<tr>
+	<td>StRowId</td><td>学号</td><td>姓名</td><td>性别</td><td>出生日期</td></tr>
+</tr>
+</table>
+	<Server>
+		Do ##class(User.DHCStudentHYX).GetStudentByNameGender("","")
+	</Server>
+</body>
+</html>

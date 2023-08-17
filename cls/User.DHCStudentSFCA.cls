@@ -220,7 +220,7 @@ ClassMethod GetListExecute(ByRef qHandle As %Binary, Code As %String) As %Status
 			///输出至CacheTemp
 		If (StCode[Code){
 			Set data=$LISTBUILD(StRowId,StCode,StName,StSexDR,StDob)
-			Set ^Cachetmp(repid,ind)=data
+			Set ^CacheTemp(repid,ind)=data
 			Set ind=ind+1
 		
 		}
