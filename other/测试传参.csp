@@ -70,7 +70,7 @@
 		{ rowId: 1, studentId: 'S001', name: '张三', gender: 'male', birthDate: '2022-01-01' },  
 		{ rowId: 2, studentId: 'S002', name: '李四', gender: 'female', birthDate: '2022-02-01' },  
 		{ rowId: 3, studentId: 'S003', name: '王五', gender: 'unknown', birthDate: '2022-03-01' }  
-	];  
+	];
 	
 	const searchButton = document.getElementById('searchButton');  
 	const addButton = document.getElementById('addButton');  
