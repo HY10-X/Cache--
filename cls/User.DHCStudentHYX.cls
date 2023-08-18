@@ -22,7 +22,6 @@ Storage NewStorage1
 {
 <SqlIdExpression>$I(^DHCSTUDENTHYX(0))</SqlIdExpression>
 <SQLMap name="DataMaster">
-<ConditionalWithHostVars></ConditionalWithHostVars>
 <Data name="St_Birthday">
 <Delimiter>"^"</Delimiter>
 <Piece>4</Piece>
@@ -51,7 +50,6 @@ Storage NewStorage1
 <Type>data</Type>
 </SQLMap>
 <SQLMap name="GenderIndex">
-<ConditionalWithHostVars></ConditionalWithHostVars>
 <Global>^DHCSTUDENTHYX</Global>
 <PopulationType>nonnull</PopulationType>
 <RowIdSpec name="1">
@@ -78,7 +76,6 @@ Storage NewStorage1
 }
 
 /*业务层：BLStudent，定义增删改查方法*/
-
 /// function:根据姓名、性别查询数据，为空时输出所有数据
 /// creator:候宇轩 
 /// createdate：2023年8月16日
@@ -86,9 +83,11 @@ Storage NewStorage1
 /// output:StNo StName StGender StBirthday(%String,%String,%String(0,1,2),%Date)
 /// table:DHCSTUDENTHYX
 /// otehr:d ##class(User.DHCStudentHYX).GetStudentByNameGender()
-ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %String
-{   
-    d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList","1")
+ClassMethod GetStudentByNameGender(StName As %String, StGender As %String) As %String
+{
+   
+    d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList",StName)   //调用query传出数据
+    b
     if (StName=""){
         if (StGender=""){   //输入都为空输出所有数据
             s RowId=0
@@ -251,6 +250,12 @@ ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = Get
 	Kill ^CacheTemp(repid)
 	Quit $$$OK
 }
+/// function:面向对象的方法实现新增操作
+/// input:RowId,StNo,StName,StGender,StBirthday
+/// GetList:入参、GetListExecute：执行，GetListFetch：从执行取数据出参，GetListClose：关闭临时global
+/// others:d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList","1")
+/// 
+
 
 
 }
