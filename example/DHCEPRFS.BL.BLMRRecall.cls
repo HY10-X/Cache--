@@ -1,30 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736_0_16871U)" ts="2023-04-20 08:02:32">
-<Class name="DHCEPRFS.BL.BLMRRecall">
-<ProcedureBlock>1</ProcedureBlock>
-<Super>%RegisteredObject</Super>
-<TimeChanged>66559,79514.17018</TimeChanged>
-<TimeCreated>66349,60845.592901</TimeCreated>
+Class DHCEPRFS.BL.BLMRRecall Extends %RegisteredObject [ ProcedureBlock ]
+{
 
-<Query name="QueryEpisodeList">
-<Description>
-Desc: 	查询召回就诊列表
-Input: 	AStartDate 出院开始日期
-        AEndDate 出院截止日期
-			AAdmType 就诊类型 I：住院，O：门诊
-        AMedRecordNo 病案号
-			ACTLocID 科室ID
-Debug: d ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryEpisodeList","2021-01-01","2021-12-31","A","","")</Description>
-<Type>%Query</Type>
-<FormalSpec>AStartDate:%String,AEndDate:%String,AAdmType:%String,AMedRecordNo:%String,ALocID:%String=""</FormalSpec>
-<Parameter name="ROWSPEC" value="SysCode:%String,EpisodeID:%String,MREpisodeID:%String,ArchiveDate:%String,MedRecordNo:%String,RegNo:%String,Name:%String,AdmDate:%String,DisDate:%String,AdmLoc:%String,DisLoc:%String,DisWard:%String"/>
-</Query>
+/// Desc: 	查询召回就诊列表
+/// Input: 	AStartDate 出院开始日期
+///         AEndDate 出院截止日期
+/// 			AAdmType 就诊类型 I：住院，O：门诊
+///         AMedRecordNo 病案号
+/// 			ACTLocID 科室ID
+/// Debug: d ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryEpisodeList","2021-01-01","2021-12-31","A","","")
+Query QueryEpisodeList(AStartDate As %String, AEndDate As %String, AAdmType As %String, AMedRecordNo As %String, ALocID As %String = "") As %Query(ROWSPEC = "SysCode:%String,EpisodeID:%String,MREpisodeID:%String,ArchiveDate:%String,MedRecordNo:%String,RegNo:%String,Name:%String,AdmDate:%String,DisDate:%String,AdmLoc:%String,DisLoc:%String,DisWard:%String")
+{
+}
 
-<Method name="QueryEpisodeListExecute">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&qHandle:%Binary,AStartDate:%String,AEndDate:%String,AAdmType:%String,AMedRecordNo:%String,ACTLocID:%String=""]]></FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod QueryEpisodeListExecute(ByRef qHandle As %Binary, AStartDate As %String, AEndDate As %String, AAdmType As %String, AMedRecordNo As %String, ACTLocID As %String = "") As %Status
+{
 	set repid=$I(^CacheTemp)
 	set ind = 1
 	set qHandle = $lb(0,repid,0)
@@ -87,15 +76,10 @@ GetEpisodeList
 	s ^CacheTemp(repid,ind) = $lb(sysCode,episodeID,mrEpisodeID,archiveDate,medRecordNo,regNo,name,admDate,disDate,admLoc,disLoc,disWard)
 	s ind = ind + 1
 	q
-]]></Implementation>
-</Method>
+}
 
-<Method name="QueryEpisodeListFetch">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&qHandle:%Binary,&Row:%List,&AtEnd:%Integer=0]]></FormalSpec>
-<PlaceAfter>QueryEpisodeListExecute</PlaceAfter>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod QueryEpisodeListFetch(ByRef qHandle As %Binary, ByRef Row As %List, ByRef AtEnd As %Integer = 0) As %Status [ PlaceAfter = QueryEpisodeListExecute ]
+{
 	Set AtEnd = $LIST(qHandle,1)
 	Set repid = $LIST(qHandle,2)
 	Set ind = $LIST(qHandle,3)
@@ -110,31 +94,23 @@ GetEpisodeList
 	// Save QHandle
 	s qHandle = $lb(AtEnd,repid,ind)
 	Quit $$$OK
-]]></Implementation>
-</Method>
+}
 
-<Method name="QueryEpisodeListClose">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&qHandle:%Binary]]></FormalSpec>
-<PlaceAfter>QueryEpisodeListExecute</PlaceAfter>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod QueryEpisodeListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = QueryEpisodeListExecute ]
+{
 	Set repid = $LIST(qHandle,2)
 	Kill ^CacheTemp(repid)
 	Quit $$$OK
-]]></Implementation>
-</Method>
+}
 
-<Query name="QueryArchivedFiles">
-<Description>
-Desc:	查询某个业务系统已归档文件目录
-Input：	AEpisodeID  		就诊号
-			ABusinessSysCode	业务系统代码
-Output: 结果集 医嘱子表ID,医嘱开始日期,医嘱开始时间,医嘱项编码,医嘱项描述,医嘱状态
-debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryArchivedFiles","27534360","PACS.GE")</Description>
-<Type>%SQLQuery</Type>
-<FormalSpec>AEpisodeID:%String,ABusinessSysCode:%String</FormalSpec>
-<SqlQuery>	SELECT E.Code As SubcategoryCode, E.Name AS SubcategoryName,D.ID AS MRItemID,D.Name AS MRItemName, 
+/// Desc:	查询某个业务系统已归档文件目录
+/// Input：	AEpisodeID  		就诊号
+/// 			ABusinessSysCode	业务系统代码
+/// Output: 结果集 医嘱子表ID,医嘱开始日期,医嘱开始时间,医嘱项编码,医嘱项描述,医嘱状态
+/// debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryArchivedFiles","27534360","PACS.GE")
+Query QueryArchivedFiles(AEpisodeID As %String, ABusinessSysCode As %String) As %SQLQuery
+{
+	SELECT E.Code As SubcategoryCode, E.Name AS SubcategoryName,D.ID AS MRItemID,D.Name AS MRItemName, 
 	C.Remark2 AS DocumentTitle, C.UpdateDate||' '||C.UpdateTime AS UpdateTime,
 	C.UpdateUserDesc,C.ID AS MRVerSubItemID,'1' AS IsPrint ,
 	(SELECT max(id) FROM DHCEPRFS_INST.MRVerSubItemDetail F WHERE F.TheMRVerSubItem=C.ID ) AS MRVerSubItemDetailID
@@ -144,18 +120,17 @@ debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryArchivedFi
 	INNER JOIN DHCEPRFS_META.MRItem D ON B.MRItemID=D.ID
 	INNER JOIN DHCEPRFS_META.MRSubCategory E ON D.MRSubCategoryID=E.ID
 	WHERE A.MREpisodeID =(SELECT ID FROM DHCEPRFS_INST.MREpisode WHERE EpisodeID =:AEpisodeID)
-	AND c.BusinessSysCode=:ABusinessSysCode</SqlQuery>
-</Query>
+	AND c.BusinessSysCode=:ABusinessSysCode
+}
 
-<Query name="QueryRecallByApplyUser">
-<Description>
-Desc:	已召回记录
-Input：	AUserID  		用户编码 
-		ABusinessSysCode	业务系统代码
-Output: 结果集 
-debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallByApplyUser","533","PACS.GE")</Description>
-<Type>%SQLQuery</Type>
-<SqlQuery>	SELECT A.ID AS MRRecallID,To_Char(A.ApplyDate,'YYYY-MM-DD') as ApplyDate,A.ApplyTime,B.ID AS MREpisodeID, 
+/// Desc:	已召回记录
+/// Input：	AUserID  		用户编码 
+/// 		ABusinessSysCode	业务系统代码
+/// Output: 结果集 
+/// debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallByApplyUser","533","PACS.GE")
+Query QueryRecallByApplyUser() As %SQLQuery
+{
+	SELECT A.ID AS MRRecallID,To_Char(A.ApplyDate,'YYYY-MM-DD') as ApplyDate,A.ApplyTime,B.ID AS MREpisodeID, 
 	B.MedRecordNo,C.RegNo,C.Name,To_Char(B.AdmDate,'YYYY-MM-DD') as AdmDate,To_Char(B.DisDate,'YYYY-MM-DD') as DisDate,
 	B.AdmLoc,B.DisLoc, A.ApproveStatus,To_Char(A.ApproveDate,'YYYY-MM-DD') AS ApproveDate,A.ApproveTime,
 	A.ApproveUserID,A.ApproveUserName,A.AuthorizedDays,
@@ -163,19 +138,15 @@ debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallByAp
 	FROM DHCEPRFS_INST.MRRecall A
 	INNER JOIN DHCEPRFS_INST.MREpisode B ON A.MREpisodeID=B.ID
 	INNER JOIN DHCEPRFS_INST.MRPatient C ON B.MRPatientID=C.ID
-	WHERE ApplyUserID = '533'</SqlQuery>
-</Query>
+	WHERE ApplyUserID = '533'
+}
 
-<Method name="RecallApply">
-<Description>
-Desc:	增加召回申请记录
-Input：	AJsonInfo json结构入参
-Output: String 成功返回ID，否则返回空
-Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallApply()</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>AJsonInfo:%GlobalBinaryStream</FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Desc:	增加召回申请记录
+/// Input：	AJsonInfo json结构入参
+/// Output: String 成功返回ID，否则返回空
+/// Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallApply()
+ClassMethod RecallApply(AJsonInfo As %GlobalBinaryStream) As %String
+{
 	s ^CacheTemp("RecallApply") = AJsonInfo
 	s nowDate= $p($h,",",1)
 	s nowTime= $p($h,",",2)
@@ -269,24 +240,19 @@ Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallApply()</Description>
 OnAddRecallApplyErrorHandler
 	TROLLBACK
 	q "-999:"_$ZERROR
-]]></Implementation>
-</Method>
+}
 
-<Method name="RecallApprove">
-<Description>
-Desc:	召回审批
-Input：	AMRRecallID 召回主表ID
-			AApproveUserID 审批人ID
-			AApproveUserName 审批人姓名
-			AApproveStatus 审批状态
-			AApproveReason  审批未通过原因
-			AAuthorizedDays 授权天数
-Output: String 成功：1，失败:0
-Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallApprove(4,"userid","username","1","测试",7)</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>AMRRecallID:%String,AApproveUserID:%String,AApproveUserName:%String,AApproveStatus:%String,AApproveReason:%String,AAuthorizedDays:%Integer</FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Desc:	召回审批
+/// Input：	AMRRecallID 召回主表ID
+/// 			AApproveUserID 审批人ID
+/// 			AApproveUserName 审批人姓名
+/// 			AApproveStatus 审批状态
+/// 			AApproveReason  审批未通过原因
+/// 			AAuthorizedDays 授权天数
+/// Output: String 成功：1，失败:0
+/// Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallApprove(4,"userid","username","1","测试",7)
+ClassMethod RecallApprove(AMRRecallID As %String, AApproveUserID As %String, AApproveUserName As %String, AApproveStatus As %String, AApproveReason As %String, AAuthorizedDays As %Integer) As %String
+{
 	s nowDate= $p($h,",",1)
 	s nowTime= $p($h,",",2)
 	TSTART
@@ -321,19 +287,14 @@ Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallApprove(4,"userid","username","1"
 OnRecallApproveErrorHandler
 	TROLLBACK
 	q "0"
-]]></Implementation>
-</Method>
+}
 
-<Method name="RecallModifyFinish">
-<Description>
-Desc:	召回修改完成
-Input：	AMRRecallID 召回主表ID
-Output: String 成功：1，失败:0
-Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallModifyFinish(4)</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>AMRRecallID:%String</FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Desc:	召回修改完成
+/// Input：	AMRRecallID 召回主表ID
+/// Output: String 成功：1，失败:0
+/// Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallModifyFinish(4)
+ClassMethod RecallModifyFinish(AMRRecallID As %String) As %String
+{
 	
 	s nowDate= $p($h,",",1)
 	s nowTime= $p($h,",",2)
@@ -374,18 +335,16 @@ Debug: w ##class(DHCEPRFS.BL.BLMRRecall).RecallModifyFinish(4)</Description>
 OnRecallModifyFinishErrorHandler
 	TROLLBACK
 	q "0"
-]]></Implementation>
-</Method>
+}
 
-<Query name="QueryRecallApply1">
-<Description>
-Desc:	查询病案召回申请记录(病案科审批)
-Input：	
-		
-Output: 结果集 
-debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallByApplyUser","533","PACS.GE")</Description>
-<Type>%SQLQuery</Type>
-<SqlQuery>	SELECT A.ID AS MRRecallID,To_Char(A.ApplyDate,'YYYY-MM-DD') as ApplyDate,A.ApplyTime,B.ID AS MREpisodeID, 
+/// Desc:	查询病案召回申请记录(病案科审批)
+/// Input：	
+/// 		
+/// Output: 结果集 
+/// debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallByApplyUser","533","PACS.GE")
+Query QueryRecallApply1() As %SQLQuery
+{
+	SELECT A.ID AS MRRecallID,To_Char(A.ApplyDate,'YYYY-MM-DD') as ApplyDate,A.ApplyTime,B.ID AS MREpisodeID, 
 	B.MedRecordNo,C.RegNo,C.Name,To_Char(B.AdmDate,'YYYY-MM-DD') as AdmDate,To_Char(B.DisDate,'YYYY-MM-DD') as DisDate,
 	B.AdmLoc,B.DisLoc, B.DisWard,A.ApplyUserID,A.ApplyUserName,a.BusinessSysCode, A.ApproveStatus,
 	To_Char(A.ApproveDate,'YYYY-MM-DD') AS ApproveDate,A.ApproveTime,
@@ -393,29 +352,23 @@ debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallByAp
 	A.FinishFlag,To_Char(A.FinishDate,'YYYY-MM-DD') AS FinishDate,A.FinishTime
 	FROM DHCEPRFS_INST.MRRecall A
 	INNER JOIN DHCEPRFS_INST.MREpisode B ON A.MREpisodeID=B.ID
-	INNER JOIN DHCEPRFS_INST.MRPatient C ON B.MRPatientID=C.ID</SqlQuery>
-</Query>
+	INNER JOIN DHCEPRFS_INST.MRPatient C ON B.MRPatientID=C.ID
+}
 
-<Query name="QueryRecallApply">
-<Description>
-Desc: 	查询病案召回申请记录(病案科审批)
-Input: 	AStartDate 申请开始日期
-        AEndDate 申请截止日期
-		AAdmType 就诊类型 I：住院，O：门诊
-		AApproveStatus 审批状态 A:全部，0:未审批，1:已审批
-        AMedRecordNo 病案号
-		ACTLocID 科室ID
-Debug: d ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallApply","2021-01-01","2023-12-31","A","A","","")</Description>
-<Type>%Query</Type>
-<FormalSpec>AStartDate:%String,AEndDate:%String,AAdmType:%String,AApproveStatus:%String,AMedRecordNo:%String,ALocID:%String=""</FormalSpec>
-<Parameter name="ROWSPEC" value="MRRecallID:%String,ApplyDate:%String,ApplyTime:%String,MREpisodeID:%String,MedRecordNo:%String,RegNo:%String,Name:%String,AdmDate:%String,DisDate:%String,AdmLoc:%String,DisLoc:%String,DisWard:%String,ApplyUserID:%String,ApplyUserName:%String,BusinessSysCode:%String,ApproveStatus:%String,ApproveDate:%String,ApproveTime:%String,ApproveUserID:%String,ApproveUserName:%String,AuthorizedDays:%String,FinishFlag:%String,FinishDate:%String,FinishTime:%String"/>
-</Query>
+/// Desc: 	查询病案召回申请记录(病案科审批)
+/// Input: 	AStartDate 申请开始日期
+///         AEndDate 申请截止日期
+/// 		AAdmType 就诊类型 I：住院，O：门诊
+/// 		AApproveStatus 审批状态 A:全部，0:未审批，1:已审批
+///         AMedRecordNo 病案号
+/// 		ACTLocID 科室ID
+/// Debug: d ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallApply","2021-01-01","2023-12-31","A","A","","")
+Query QueryRecallApply(AStartDate As %String, AEndDate As %String, AAdmType As %String, AApproveStatus As %String, AMedRecordNo As %String, ALocID As %String = "") As %Query(ROWSPEC = "MRRecallID:%String,ApplyDate:%String,ApplyTime:%String,MREpisodeID:%String,MedRecordNo:%String,RegNo:%String,Name:%String,AdmDate:%String,DisDate:%String,AdmLoc:%String,DisLoc:%String,DisWard:%String,ApplyUserID:%String,ApplyUserName:%String,BusinessSysCode:%String,ApproveStatus:%String,ApproveDate:%String,ApproveTime:%String,ApproveUserID:%String,ApproveUserName:%String,AuthorizedDays:%String,FinishFlag:%String,FinishDate:%String,FinishTime:%String")
+{
+}
 
-<Method name="QueryRecallApplyExecute">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&qHandle:%Binary,AStartDate:%String,AEndDate:%String,AAdmType:%String,AApproveStatus:%String,AMedRecordNo:%String,ACTLocID:%String=""]]></FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod QueryRecallApplyExecute(ByRef qHandle As %Binary, AStartDate As %String, AEndDate As %String, AAdmType As %String, AApproveStatus As %String, AMedRecordNo As %String, ACTLocID As %String = "") As %Status
+{
 	set repid=$I(^CacheTemp)
 	set ind = 1
 	set qHandle = $lb(0,repid,0)
@@ -510,15 +463,10 @@ GetRecallApplyList
 	approveTime,approveUserID,approveUserName,authorizedDays,finishFlag,finishDate,finishTime)
 	s ind = ind + 1
 	q
-]]></Implementation>
-</Method>
+}
 
-<Method name="QueryRecallApplyFetch">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&qHandle:%Binary,&Row:%List,&AtEnd:%Integer=0]]></FormalSpec>
-<PlaceAfter>QueryRecallApplyExecute</PlaceAfter>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod QueryRecallApplyFetch(ByRef qHandle As %Binary, ByRef Row As %List, ByRef AtEnd As %Integer = 0) As %Status [ PlaceAfter = QueryRecallApplyExecute ]
+{
 	Set AtEnd = $LIST(qHandle,1)
 	Set repid = $LIST(qHandle,2)
 	Set ind = $LIST(qHandle,3)
@@ -533,31 +481,21 @@ GetRecallApplyList
 	// Save QHandle
 	s qHandle = $lb(AtEnd,repid,ind)
 	Quit $$$OK
-]]></Implementation>
-</Method>
+}
 
-<Method name="QueryRecallApplyClose">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&qHandle:%Binary]]></FormalSpec>
-<PlaceAfter>QueryRecallApplyExecute</PlaceAfter>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod QueryRecallApplyClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = QueryRecallApplyExecute ]
+{
 	Set repid = $LIST(qHandle,2)
 	Kill ^CacheTemp(repid)
 	Quit $$$OK
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetRecallDetailJson1">
-<Description>
-Desc:	获取召回记录详情json
-Input：	AMRRecallID 召回主表ID
-Output: String json
-Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallDetailJson(4)</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>AMRRecallID:%String</FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Desc:	获取召回记录详情json
+/// Input：	AMRRecallID 召回主表ID
+/// Output: String json
+/// Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallDetailJson(4)
+ClassMethod GetRecallDetailJson1(AMRRecallID As %String) As %String
+{
 	s retjson = ""
 	s objMRRecall = ##class(DHCEPRFS.INST.MRRecall).%OpenId(AMRRecallID)
 	q:(objMRRecall = "") retjson
@@ -618,16 +556,11 @@ Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallDetailJson(4)</Description>
 	s retjson = retjson _allItemJson_"],""total"":"""_rowCount_"""}"
 	s retjson = retjson _"}"
 	q retjson
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetRecallDetailJson">
-<Description>
-Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallDetailJson("10")</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>AMRRecallID:%String</FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallDetailJson("10")
+ClassMethod GetRecallDetailJson(AMRRecallID As %String) As %String
+{
 	s retjson = ""
 	s objMRRecall = ##class(DHCEPRFS.INST.MRRecall).%OpenId(AMRRecallID)
 	q:(objMRRecall = "") retjson
@@ -696,20 +629,17 @@ Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallDetailJson("10")</Description>
 	s retjson = retjson _allItemJson_"],""total"":"""_rowCount_"""}"
 	s retjson = retjson _"}"
 	q retjson
-]]></Implementation>
-</Method>
+}
 
-<Query name="QueryRecallAlterFiles">
-<Description>
-Desc:	查询某次召回变更的归档文件
-Input：	AMREpisodeID 归档就诊ID
-		ABusinessSysCode 业务系统代码
-			AMRArchiveRecordID 归档记录ID
-Output: 结果集 
-debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallAlterFiles","359102","PACS.GE","710")</Description>
-<Type>%SQLQuery</Type>
-<FormalSpec>AMREpisodeID:%String,ABusinessSysCode:%String,AMRArchiveRecordID:%String</FormalSpec>
-<SqlQuery>	SELECT E.Code As SubcategoryCode, E.Name AS SubcategoryName,D.ID AS MRItemID,D.Name AS MRItemName, 
+/// Desc:	查询某次召回变更的归档文件
+/// Input：	AMREpisodeID 归档就诊ID
+/// 		ABusinessSysCode 业务系统代码
+/// 			AMRArchiveRecordID 归档记录ID
+/// Output: 结果集 
+/// debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallAlterFiles","359102","PACS.GE","710")
+Query QueryRecallAlterFiles(AMREpisodeID As %String, ABusinessSysCode As %String, AMRArchiveRecordID As %String) As %SQLQuery
+{
+	SELECT E.Code As SubcategoryCode, E.Name AS SubcategoryName,D.ID AS MRItemID,D.Name AS MRItemName, 
 	C.Remark2 AS DocumentTitle, C.UpdateDate||' '||C.UpdateTime AS UpdateTime,
 	C.UpdateUserDesc,C.ID AS MRVerSubItemID,F.DetailNum,F.FileMasterID  FROM dhceprfs_inst.mrversion A
 	INNER JOIN DHCEPRFS_INST.MRVerItem B ON A.ID = B.MRVersionID
@@ -718,16 +648,12 @@ debug: do ##class(%ResultSet).RunQuery("DHCEPRFS.BL.BLMRRecall","QueryRecallAlte
 	INNER JOIN DHCEPRFS_META.MRSubCategory E ON D.MRSubCategoryID=E.ID
 	INNER JOIN DHCEPRFS_INST.MRVerSubItemDetail F ON C.ID=F.TheMRVerSubItem 
 	WHERE A.MREpisodeID =:AMREpisodeID
-	AND c.BusinessSysCode=:ABusinessSysCode AND F.MRArchiveRecordID=:AMRArchiveRecordID</SqlQuery>
-</Query>
+	AND c.BusinessSysCode=:ABusinessSysCode AND F.MRArchiveRecordID=:AMRArchiveRecordID
+}
 
-<Method name="GetRecallAttach">
-<Description>
-Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallAttach("9")</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>AMRRecallID:%String</FormalSpec>
-<ReturnType>%GlobalBinaryStream</ReturnType>
-<Implementation><![CDATA[
+/// Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallAttach("9")
+ClassMethod GetRecallAttach(AMRRecallID As %String) As %GlobalBinaryStream
+{
 	s retStream=##class(%GlobalBinaryStream).%New()
 	s xOrdNum = ""
 	s xOrdNum = $o(^DHCEPRFS.INST.MRRecallAttachI("IdxUnique"," "_AMRRecallID,xOrdNum))
@@ -748,7 +674,6 @@ Debug: w ##class(DHCEPRFS.BL.BLMRRecall).GetRecallAttach("9")</Description>
 	}
 	d retStream.Write("""}")
 	q retStream
-]]></Implementation>
-</Method>
-</Class>
-</Export>
+}
+
+}
