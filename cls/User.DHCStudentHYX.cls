@@ -253,7 +253,7 @@ ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = Get
 /// function:面向对象的方法实现新增操作
 /// input:StNo,StName,StGender,StBirthday
 /// others:d ##class(User.DHCStudentHYX).AddData("8888","张新增","1","2001-01-01")
-/// d ##class(User.DHCStudentHYX).AddData("9","张新增2","1","2001-01-01")
+/// w ##class(User.DHCStudentHYX).AddData("9","张新增2","1","2001-01-01")
 ClassMethod AddData(StNo As %String, StName As %String, StGender As %String, StBirthday As %Date) As %String
 {   
     Quit:(StNo="")||(StName="") "学号或姓名为空"
@@ -266,12 +266,15 @@ ClassMethod AddData(StNo As %String, StName As %String, StGender As %String, StB
        if (StNoTemp=StNo){
             s Count=Count+1     //统计重复的学号
         }
-        w StNoTemp,!
+       // w StNoTemp,!
     }
-   if (Count'=0){
-        return "学号存在"
+    if (Count'=0){
+        return "学号已存在"
     }
-    
+    //判断性别输入是否正确
+    if (StGender'=0||StGender'=1||StGender'=2){
+        return "性别输入错误"
+    }
     Set:StBirthday'="" StBirthday=##class(websys.Conversions).DateHtmlToLogical(StBirthday) //标准转换日期接口 = $zdh(stdob,3)
  	Set oref=##class(User.DHCStudentHYX).%New()
     If (oref){    //判断对象是否创建，还可以写做 (oref)
@@ -294,5 +297,43 @@ ClassMethod AddData(StNo As %String, StName As %String, StGender As %String, StB
     Do oref.%Close()
     Quit result
 }
-
+/// function:更改学生信息
+/// table：DHC_StudenHYX
+/// input:StRowId,StNo,StName,StGender,StBirthday
+/// output:
+/// other:w ##class(User.DHCStudentHYX).UpdateData("5","8888","张xiugai","0","2001-02-21")
+ClassMethod UpdateData(StRowId As %String, StNo as%String,StName As %String, StGender As %String, StBirthday As %Date)as %String {
+	q:(StRowId="") "RowId为空"
+    Quit:(StNo="")||(StName="") "学号或姓名为空"
+    //判断性别输入是否正确
+    if (StGender'=0){
+        if (StGender'=2){
+            if (StGender'=1){
+                 return "性别输入错误"
+            }
+        }
+       
+    }
+	Set:StBirthday'="" StBirthday=$zdh(StBirthday,3)    //转换日期格式
+	s obj=##class(User.DHCStudentHYX).%OpenId(StRowId) //open obejct 
+	if (obj){
+		s obj.StNo=StNo
+        s obj.StName=StName
+        s obj.StGender=StGender
+		s obj.StBirthday=StBirthday
+      
+		TSTART		//引入事务
+		s sc=obj.%Save()	//save obj
+		if (sc=1){
+			TCOMMIT
+			s result=1
+		}
+		Else{
+			TROLLBACK
+			s result=0
+		}
+		d obj.%Close()
+		q result
+	}
+}
 }
