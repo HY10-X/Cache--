@@ -86,7 +86,7 @@ Storage NewStorage1
 ClassMethod GetStudentByNameGender(StName As %String, StGender As %String) As %String
 {
    
-    d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList",StName)   //调用query传出数据
+    d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList",StName)   //调用query传出数据测试
     b
     if (StName=""){
         if (StGender=""){   //输入都为空输出所有数据
@@ -251,11 +251,48 @@ ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = Get
 	Quit $$$OK
 }
 /// function:面向对象的方法实现新增操作
-/// input:RowId,StNo,StName,StGender,StBirthday
-/// GetList:入参、GetListExecute：执行，GetListFetch：从执行取数据出参，GetListClose：关闭临时global
-/// others:d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList","1")
-/// 
+/// input:StNo,StName,StGender,StBirthday
+/// others:d ##class(User.DHCStudentHYX).AddData("8888","张新增","1","2001-01-01")
+/// d ##class(User.DHCStudentHYX).AddData("9","张新增2","1","2001-01-01")
+ClassMethod AddData(StNo As %String, StName As %String, StGender As %String, StBirthday As %Date) As %String
+{   
+    Quit:(StNo="")||(StName="") "学号或姓名为空"
+    s RowIdIdenti=0
+    s Count=0
+    for{    //遍历判断学号是否重复
+        s RowIdIdenti=$o(^DHCSTUDENTHYX(RowIdIdenti))   //取rowid值 
+        q:RowIdIdenti="" //rowid为空跳出 
+        s StNoTemp=$p(^DHCSTUDENTHYX(RowIdIdenti),"^",1)    //取学号值
+       if (StNoTemp=StNo){
+            s Count=Count+1     //统计重复的学号
+        }
+        w StNoTemp,!
+    }
+   if (Count'=0){
+        return "学号存在"
+    }
+    
+    Set:StBirthday'="" StBirthday=##class(websys.Conversions).DateHtmlToLogical(StBirthday) //标准转换日期接口 = $zdh(stdob,3)
+ 	Set oref=##class(User.DHCStudentHYX).%New()
+    If (oref){    //判断对象是否创建，还可以写做 (oref)
+        Set oref.StNo=StNo
+        Set oref.StName=StName
+        Set oref.StGender=StGender
+        Set oref.StBirthday=StBirthday  //需要转换格式，转换为逻辑数字传输
+        Set sc=oref.%Save()
+        If ($$$ISOK(sc)){    //(sc=1)判断保存是否为空,保存是否成功
+        
+            Set StRowId=oref.%Id()
+            Set result="add success"_StRowId
+        }
+        Else{
+            Set result="add error"_$SYSTEM.OBJ.DISPLAYError(sc)   //显示错误信息 w $SYSTEM.Status.DISPLAYError
 
+        }
 
+    }
+    Do oref.%Close()
+    Quit result
+}
 
 }
