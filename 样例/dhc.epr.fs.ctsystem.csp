@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<csp:method name=OnPreHTTP arguments="" returntype=%Boolean>
+ i ##Class(websys.SessionEvents).SessionExpired() q 1
+ quit 1
+</csp:method>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统维护</title>
+	<HISUI/>
+	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
+</head>
+<body style="padding:10px;box-sizing:border-box;">
+	<div class="hisui-layout layout" data-options="fit:true,border:false">
+		
+		<div data-options="region:'center',border:false">
+			<div class="hisui-panel"  data-options="title:'系统维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
+				<div data-options="region:'center',border:false" style="height:99%">
+					<table id="ctsystemTable"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--编辑框-->
+	<div id="CtSystemDialog" style="width:420px;height:auto;padding:10px;display:none;">
+		<input class="textbox" id="txtACTSystemID" type="hidden" ></input>
+	    <table class="form-table">
+			<tr>
+				<td class="form-r-label">
+					<label for="txtSysCode">系统代码</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtSysCode" style="width:250px;"></input>
+				</td>
+			</tr>	
+			<tr>
+				<td class="form-r-label">
+					<label for="txtSysName">系统名称</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtSysName" style="width:250px;"></input>
+				</td>
+			</tr>
+			<tr>
+				<td class="form-r-label">
+					<label for="txtStartDate">启用日期</label>
+				</td>
+				<td>
+					<input id="txtStartDate" class="hisui-datebox" style="width:256px;"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="form-r-label">
+					<label for="txtNotes">备注</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtNotes" style="width:250px;"></input>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<script language="cache" runat="server">
+		s userID = %session.Get("LOGON.USERID")
+		s userLocID = %session.Get("LOGON.CTLOCID")
+	</script>
+	<script type="text/javascript">
+		var userID = '#(userID)#';
+		var userLocID = '#(userLocID)#';
+	</script>
+	<script src="../scripts/epr/js/fs.ctsystem.js"></script>
+</body>
+</html>

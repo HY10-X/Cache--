@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2016.2 (Build 736_0_16871U)" ts="2023-08-18 16:49:39">
+<Class name="DHCEPRFS.META.CTSystem">
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%Persistent</Super>
+<TimeChanged>66679,84493.203577</TimeChanged>
+<TimeCreated>66532,25584.701186</TimeCreated>
+
+<Property name="SysCode">
+<Description>
+系统代码</Description>
+<Type>%String</Type>
+<Parameter name="TRUNCATE" value="1"/>
+</Property>
+
+<Property name="SysName">
+<Description>
+系统名称</Description>
+<Type>%String</Type>
+<Parameter name="TRUNCATE" value="1"/>
+</Property>
+
+<Property name="StartDate">
+<Description>
+启用日期</Description>
+<Type>%Date</Type>
+</Property>
+
+<Property name="Notes">
+<Description>
+备注</Description>
+<Type>%String</Type>
+<Parameter name="MAXLEN" value="200"/>
+<Parameter name="TRUNCATE" value="1"/>
+</Property>
+
+<Property name="LastModifyDate">
+<Description>
+最后修改日期</Description>
+<Type>%Date</Type>
+</Property>
+
+<Property name="LastModifyTime">
+<Description>
+最后修改时间</Description>
+<Type>%Time</Type>
+</Property>
+
+<Index name="IdxSysCode">
+<Properties>SysCode</Properties>
+<Unique>1</Unique>
+</Index>
+
+<Storage name="Default">
+<Type>%Library.CacheStorage</Type>
+<DataLocation>^DHCEPRFS.META.CTSystemD</DataLocation>
+<DefaultData>CTSystemDefaultData</DefaultData>
+<IdLocation>^DHCEPRFS.META.CTSystemD</IdLocation>
+<IndexLocation>^DHCEPRFS.META.CTSystemI</IndexLocation>
+<StreamLocation>^DHCEPRFS.META.CTSystemS</StreamLocation>
+<Data name="CTSystemDefaultData">
+<Value name="1">
+<Value>%%CLASSNAME</Value>
+</Value>
+<Value name="2">
+<Value>SysCode</Value>
+</Value>
+<Value name="3">
+<Value>SysName</Value>
+</Value>
+<Value name="4">
+<Value>StartDate</Value>
+</Value>
+<Value name="5">
+<Value>Notes</Value>
+</Value>
+<Value name="6">
+<Value>LastModifyDate</Value>
+</Value>
+<Value name="7">
+<Value>LastModifyTime</Value>
+</Value>
+</Data>
+</Storage>
+</Class>
+</Export>
