@@ -336,4 +336,30 @@ ClassMethod UpdateData(StRowId As %String, StNo as%String,StName As %String, StG
 		q result
 	}
 }
+///function:删除数据
+/// table：DHC_StudentHYX
+/// input:StRowId（不为空）
+/// output:
+/// other:w ##class(User.DHCStudentHYX).DeleteData("6")
+ClassMethod DeleteData(StRowId AS %String) as %String{
+	Quit:StRowId="" "RowId为空"
+	Set obj=##class(User.DHCStudentHYX).%OpenId(StRowId)
+	If (obj){	//通过%OpenId判断数据是否存在
+	Tstart
+		Set sc=obj.%DeleteId(StRowId)	//通过%DeleteId删除数据
+		If (sc=1){
+			Set result="success"
+			Tcommit
+		}
+		Else{
+			Trollback
+			Set result="error"_$SYSTEM.Status.DISPLAYError(sc)
+		}
+		Do obj.%Close()
+	}
+	Else{
+		Set result="数据不存在"
+	}
+    return result
+}
 }
