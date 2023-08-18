@@ -1,0 +1,184 @@
+<HTML>
+<HEAD>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<TITLE>申请权限</TITLE>	
+	
+	<script language="cache" runat="server">
+  		s appointUserID = %session.Get("LOGON.USERID")
+		s appointUserLoc = %session.Get("LOGON.CTLOCID")
+		s appointUserSSGroupID = %session.Get("LOGON.GROUPID")	
+		s hospitalFlag = ##class(DHCEPRFS.BL.BLSysOption).GetValueByName("HospitalFlag")
+		s dataServiceURL = ##class(DHCEPRFS.BL.BLSysOption).GetValueByName("DataServiceURL")
+		s systemName = ##class(DHCEPRFS.BL.BLSysOption).GetValueByName("SystemName")
+        s systemVersion = ##class(DHCEPRFS.BL.BLSysOption).GetValueByName("Version")
+	</script>
+	<script type="text/javascript">
+		var appointUserID = '#(appointUserID)#';
+		var appointUserLoc = '#(appointUserLoc)#';	
+		var appointUserSSGroupID = '#(appointUserSSGroupID)#';
+		var hospitalFlag = '#(hospitalFlag)#';
+		var dataServiceURL = '#(dataServiceURL)#';
+		var systemName = '#(systemName)#';
+        var systemVersion = '#(systemVersion)#';
+		if (appointUserID == "")
+		{
+			appointUserID = '2776';
+			appointUserLoc = '1673';	
+			appointUserSSGroupID = '1';
+		}
+	</script>
+	
+	<script src="../scripts/epr/JQuery/jquery-1.8.0.min.js"></script>
+	<script src="../scripts/epr/JQuery/jquery.easyui.min.js"></script>
+	<script src="../scripts/epr/JQuery/easyui-lang-zh_CN.js"></script>
+	<link rel="stylesheet" type="text/css" href="../scripts/epr/JQuery/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../scripts/epr/JQuery/themes/icon.css">
+    
+	<script src="../scripts/epr/JQuery/datagrid-detailview.js"></script>
+	
+	<script src="../scripts/epr/js/FS.ApplyPermission.js"></script>	
+	
+</HEAD>
+
+<body class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'north'" class="easyui-panel" style="padding:3px;height:110px;border:0">
+		<div id="applyListTBar" class="easyui-panel" style="height:30;border:0">
+			<a href="#" id="addApplyBtn" class="easyui-linkbutton" iconCls="icon-add" data-options="plain:true">新增浏览申请</a>
+			<a href="#" id="viewHistoryBtn" class="easyui-linkbutton" iconCls="icon-tip" data-options="plain:true">浏览记录</a>
+			<a href="#" id="viewFavoritesBtn" class="easyui-linkbutton" iconCls="icon-tip" data-options="plain:true">收藏</a>
+		</div>
+		<div id="applyListTableTBar" class="easyui-panel" style="height:70;border:0">	
+			<div style="margin:5px">
+				<select id="inputType" name="inputType" style="width:100px;height:20px;"></select>
+ 				<input id="inputDateStart" class="easyui-datebox" />
+ 				<input id="inputDateEnd" class="easyui-datebox" />
+			</div>	
+			<div style="margin:5px">
+				<a href="#" id="searchBtn" class="easyui-linkbutton" iconCls="icon-search">查询</a>
+				<a href="#" id="resetBtn" class="easyui-linkbutton" iconCls="icon-reload">清空条件</a>
+				<a href="#" id="addFavoriteBtn" class="easyui-linkbutton" iconCls="icon-reload">添加收藏</a>
+				<a href="#" id="reAppointBtn" class="easyui-linkbutton" iconCls="icon-reload">重新申请选中申请</a>
+				<a href="#" id="viewBtn" class="easyui-linkbutton" iconCls="icon-tip">浏览选中文档</a>
+			</div>		
+		</div>	
+	</div>
+	<div data-options="region:'center'"  style="width:500px;border:0">
+		<div id="applyDefaultListPanel" class="easyui-panel" style="border:0">
+			<table id="applyDefaultListTable" data-options="fit:true"></table>
+		</div>
+		<div id="applyListPanel" class="easyui-panel" style="border:0">
+			<table id="applyListTable" data-options="fit:true"></table>
+		</div>
+	</div>
+	<div data-options="region:'south',border:false" style="height:20px;">
+        <div id="systemDesc" style="float:right;padding:0 10px;font-size:13px;"></div>
+    </div>
+	<div id="addApplyWin" style="width:1000px;height:600px;padding:10px">
+    	<div class="easyui-layout" data-options="fit:true">    
+        	<div data-options="region:'center'">   
+				<div id="patientListTableTBar" style="padding:5px;height:50">	
+					<div>
+						<!--患者就诊科室: <select id="inputPatientLoc" name="inputPatientLoc" style="width:100px;height:20px;"></select>
+						患者就诊病区: <select id="inputPatientWard" name="inputPatientWard" style="width:100px;height:20px;"></select> -->
+						患者姓名:<input id="inputPatientName" class="easyui-textbox" style="width:100px;height:20px;" />
+						患者登记号:<input id="inputPatientRegNo" class="easyui-textbox" style="width:100px;height:20px;" />
+						患者就诊号:<input id="inputPatientEpisodeID" class="easyui-textbox" style="width:100px;height:20px;" />
+						患者病人号:<input id="inputPatientID" class="easyui-textbox" style="width:100px;height:20px;" />
+						患者病案号:<input id="inputMedRecordID" class="easyui-textbox" style="width:100px;height:20px;" />
+					</div>
+					<div style="margin:5px">
+						<a href="#" id="patientSearchBtn" class="easyui-linkbutton" iconCls="icon-search">查询患者</a>
+						<a href="#" id="patientResetBtn" class="easyui-linkbutton" iconCls="icon-reload">清空条件</a>
+					</div>	
+					<div style="margin:5px">
+						<a href="#" id="addListBtn" class="easyui-linkbutton" iconCls="icon-add">将选中加入申请列表</a>
+					</div>	
+				</div>
+				<table id="patientListTable" data-options="fit:true"></table>
+        	</div>   
+			<div data-options="region:'south'" style="height:200">   
+				<div id="addListTableTBar" style="padding:5px;height:50">	
+					<div style="margin:5px">
+						<a href="#" id="removeListBtn" class="easyui-linkbutton" iconCls="icon-remove">将选中移除申请列表</a>
+						<a href="#" id="resetListBtn" class="easyui-linkbutton" iconCls="icon-reload">清空申请列表</a>
+					</div>	
+					<div style="margin:5px">
+						<a href="#" id="addNewApplyBtn" class="easyui-linkbutton" iconCls="icon-ok">浏览申请<font color="red">(需审批)</font></a>
+						<a href="#" id="addDefaultRoleBtn" class="easyui-linkbutton" iconCls="icon-ok">本科病历浏览(无需审批)</a>
+					</div>	
+				</div>
+				<table id="addListTable" data-options="fit:true"></table>
+        	</div>  
+    	</div>  
+    </div>
+    <div id="viewHistoryWin" style="width:1000px;height:600px;padding:10px">
+    	<div class="easyui-layout" data-options="fit:true">    
+        	<div data-options="region:'center'">   
+				<div id="historyListTableTBar" style="padding:5px;height:50">
+					<div style="margin:5px">
+ 						<input id="historyDateStart" class="easyui-datebox" />
+ 						<input id="historyDateEnd" class="easyui-datebox" />
+ 					</div>
+					<div style="margin:5px">
+						<a href="#" id="refreshBtn" class="easyui-linkbutton" iconCls="icon-search">刷新</a>
+					</div>	
+				</div>
+				<table id="historyListTable" data-options="fit:true"></table>
+        	</div>  
+    	</div>  
+    </div>
+    <div id="viewFavoritesWin" style="width:1000px;height:600px;padding:10px">
+    	<div class="easyui-layout" data-options="fit:true">  
+    		<div data-options="region:'west'" style="width:100px">   
+				<div id="categoryListTableTBar" style="padding:5px;height:50">
+					<div style="margin:5px">
+						<a href="#" id="categoryAddBtn" class="easyui-linkbutton" iconCls="icon-add"></a>
+						<a href="#" id="categoryDeleteBtn" class="easyui-linkbutton" iconCls="icon-remove"></a>
+					</div>	
+				</div>
+				<table id="categoryListTable" data-options="fit:true"></table>
+        	</div>  
+        	<div data-options="region:'center'">   
+				<div id="favoritesListTableTBar" style="padding:5px;height:50">
+					<div style="margin:5px">
+						<a href="#" id="favoritesDeleteBtn" class="easyui-linkbutton" iconCls="icon-remove">删除收藏</a>
+ 						<a href="#" id="favoritesMoveBtn" class="easyui-linkbutton" iconCls="icon-remove">移动到分类</a>
+ 					</div>
+				</div>
+				<table id="favoritesListTable" data-options="fit:true"></table>
+        	</div>  
+    	</div>  
+    </div>
+  	<div id="addCategoryDialog" class="easyui-dialog" style="width:400px;height:200px">
+    	<div style="margin:5px">
+    		<div style="margin:20px 0;"></div>
+    		<p>请填写分类名:</p>
+			<input id="inputCategoryDesc" class="easyui-textbox" data-options="multiline:false" style="width:350px;height:60px">
+		</div>
+	</div>
+	<div id="addFavoriteDialog" class="easyui-dialog" style="width:200px;height:400px">
+    	<div class="easyui-layout" data-options="fit:true">    
+        	<div data-options="region:'center'">  
+				<div id="categoryListTableSelectTBar" style="padding:5px;height:50">
+					<div style="margin:5px">
+						<a href="#" id="categorySelectAddBtn" class="easyui-linkbutton" iconCls="icon-add"></a>
+						<a href="#" id="categorySelectDeleteBtn" class="easyui-linkbutton" iconCls="icon-remove"></a>
+					</div>	
+				</div>
+				<table id="categoryListSelectTable" data-options="fit:true"></table>
+			</div>
+		</div>
+	</div>
+	<div id="requestReasonDialog" class="easyui-dialog" style="width:400px;height:300px">
+    	<div style="margin:5px">
+    		<p>确定申请权限?点击申请后会提交审批,审批通过后即可浏览相应的病历</p>
+    		<p>请选择申请浏览的时长:</p>
+			<select id="inputRequestSpan" name="inputRequestSpan" style="width:350px;height:20px;"></select>
+    		<p>请填写申请的原因:</p>
+			<input id="inputRequestReason" class="easyui-textbox" data-options="multiline:true" style="width:350px;height:40px">
+		</div>
+	</div>
+</body>
+
+</HTML>
+

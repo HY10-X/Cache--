@@ -88,6 +88,7 @@ Storage NewStorage1
 /// otehr:d ##class(User.DHCStudentHYX).GetStudentByNameGender()
 ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %String
 {   
+    d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList","1")
     if (StName=""){
         if (StGender=""){   //输入都为空输出所有数据
             s RowId=0
@@ -149,6 +150,7 @@ ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %St
               if (StNameTemp=StName)||(StNameTemp=""){
                     w RowId_"学号："_StNo_"姓名："_StName_"性别："_StGender_"日期："_StBirthday_""	
                     w !
+                    
                 }    
             }
          }
@@ -185,7 +187,7 @@ ClassMethod GetStudentByNameGender(StName as %String,StGender as %String) As %St
     }
 }
 
-/// function:编写使用query
+/// function:编写使用按照学号查询query
 /// input:RowId,StNo,StName
 /// GetList:入参、GetListExecute：执行，GetListFetch：从执行取数据出参，GetListClose：关闭临时global
 /// others:d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetList","1")
@@ -249,5 +251,6 @@ ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = Get
 	Kill ^CacheTemp(repid)
 	Quit $$$OK
 }
+
 
 }
