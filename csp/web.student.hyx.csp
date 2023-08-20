@@ -1,72 +1,200 @@
-<!DOCTYPE html>  
-<html>  
-<head>  
-    <title>学生信息查询</title>  
-    <style>  
-        body {  
-            font-family: Arial, sans-serif;  
-            margin: 0;  
-            padding: 20px;  
-        }  
-        h1 {  
-            text-align: center;  
-        }  
-        table {  
-            width: 100%;  
-            border-collapse: collapse;  
-        }  
-        th, td {  
-            padding: 10px;  
-            border-bottom: 1px solid #9bbafa;  
-        }  
-        input[type="text"], select {  
-            width: 30%;  
-            padding: 10px;  
-            margin-bottom: 10px;  
-        }  
-        button {  
-            padding: 10px 20px;  
-            background-color: #9bbafa;  
-            color: white;  
-            border: none;  
-            cursor: pointer;  
-        }  
-        button:hover {  
-            background-color: #9bbafa;  
-        }  
-    </style>  
-</head>  
-<body>  
-    <h1>学生信息查询</h1>  
-    <form id="searchForm">  
-        <input type="text" id="nameInput" placeholder="姓名">  
-        <select id="genderSelect">  
-            <option value="male">男</option>  
-            <option value="female">女</option>  
-            <option value="unknown">未知性别</option>  
-        </select>  
-        <button type="button" id="searchButton">查询</button>  
-        <button type="button" id="addButton">新增</button>  
-		<button type="button" id="deletButton">删除</button>  
-    </form>  
-    <table id="resultTable">  
-        <thead>  
-            <tr>  
-                <th>RowId</th>  
-                <th>学号</th>  
-                <th>姓名</th>  
-                <th>性别</th>  
-                <th>出生日期</th>  
-                <th></th>  
-                <th></th>  
-                <th></th>  
-            </tr>  
-        </thead>  
-        <tbody id="resultBody"></tbody>  
-    </table>  
-    <script language="javascript">
+<!DOCTYPE html>
 
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>学生信息表</title>
+	<HISUI/>
+
+</head>
+<body style="padding:10px;box-sizing:border-box;">
+	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		
-	</script>  
-</body>  
+		<div data-options="region:'center',border:false">
+			<div class="hisui-panel"  data-options="title:'系统维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
+				<div data-options="region:'center',border:false" style="height:99%">
+					<table id="ctsystemTable"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--编辑框-->
+	<div id="CtSystemDialog" style="width:420px;height:auto;padding:10px;display:none;">
+		<input class="textbox" id="txtACTSystemID" type="hidden" ></input>
+	    <table class="form-table">
+			<tr>
+				<td class="form-r-label">
+					<label for="txtSysCode">系统代码</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtSysCode" style="width:250px;"></input>
+				</td>
+			</tr>	
+			<tr>
+				<td class="form-r-label">
+					<label for="txtSysName">系统名称</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtSysName" style="width:250px;"></input>
+				</td>
+			</tr>
+			<tr>
+				<td class="form-r-label">
+					<label for="txtStartDate">启用日期</label>
+				</td>
+				<td>
+					<input id="txtStartDate" class="hisui-datebox" style="width:256px;"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="form-r-label">
+					<label for="txtNotes">备注</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtNotes" style="width:250px;"></input>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<script language="cache" runat="server">
+		s userID = %session.Get("LOGON.USERID")
+		s userLocID = %session.Get("LOGON.CTLOCID")
+	</script>
+	<script type="text/javascript">
+		var userID = '#(userID)#';
+		var userLocID = '#(userLocID)#';
+        
+(function (win) {
+	$(function() {
+	
+		$HUI.datagrid('#ctsystemTable',{
+			fit: true,
+			border: false,
+			toolbar: [{
+				iconCls: 'icon-add',
+				text: '新增',
+				handler: function(){
+					editCtSystem("add");
+				}
+			},{
+				iconCls: 'icon-edit',
+				text: '修改',
+				handler: function(){
+					editCtSystem("edit");
+				}
+			}],
+			rownumbers: true,
+			singleSelect: true,
+			pagination: true,
+			pageSize: 20,
+			pageList: [10, 20, 50],
+			url: $URL,
+			queryParams:{
+				ClassName: 'DHCEPRFS.BL.BLCTSystem',
+				QueryName: 'GetCTSystem'
+			},
+			columns: [[
+				//{ field: 'ck', checkbox: true },
+				{ field: 'SysCode', title: '系统代码', width: 150},
+				{ field: 'SysName', title: '系统名称', width: 150},
+				{ field: 'StartDate', title: '启用日期', width: 150 },
+				{ field: 'Notes', title: '备注', width: 180 },
+				{ field: 'LastModifyDate', title: '更新日期', width: 150 },
+				{ field: 'LastModifyTime', title: '更新时间', width: 150 }
+			]]
+		});
+		// 字典类型新增、修改事件
+		function editCtSystem(op){
+			var selected = $("#ctsystemTable").datagrid('getSelected');
+			if (( op == "edit")&&(!selected)) {
+				$.messager.alert("提示","请选择一条记录...","info")
+				return false;
+			}
+			$('#CtSystemDialog').css('display','block');
+			var _title = "修改系统类型",_icon="icon-w-edit"
+			if (op == "add") {
+				_title = "添加系统类型",_icon="icon-w-add";
+				$("#txtACTSystemID").val('');
+				$("#txtSysCode").val('');
+				$("#txtSysName").val('');
+				$("#txtStartDate").datebox('setValue','');
+				$("#txtNotes").val('');
+			} else {
+				$("#txtACTSystemID").val(selected.SysID);
+				$("#txtSysCode").val(selected.SysCode);
+				$("#txtSysName").val(selected.SysName);
+				$("#txtStartDate").datebox('setValue',selected.StartDate);
+				$("#txtNotes").val(selected.Notes);
+			}
+
+			var CtSystemDialog = $HUI.dialog('#CtSystemDialog', {
+				title: _title,
+				iconCls: _icon,
+				modal: true,
+				minimizable:false,
+				maximizable:false,
+				maximizable:false,
+				collapsible:false,
+				buttons:[{
+					text:'保存',
+						iconCls:'icon-w-save',
+						handler:function(){
+							saveCtSystem();
+						}
+				},{
+				text:'关闭',
+				iconCls:'icon-w-close',
+				handler:function(){
+						$('#CtSystemDialog').window("close");
+					}	
+				}]
+			});
+		}
+		// 系统保存操作
+		function saveCtSystem(){
+			var CTSystemID = $("#txtACTSystemID").val();
+			var SysCode = $("#txtSysCode").val();
+			var SysName = $("#txtSysName").val();
+			var StartDate = $("#txtStartDate").datebox('getValue');
+			var Notes = $("#txtNotes").val();
+			if (SysCode == '') {
+				$.messager.alert("提示","请填写系统代码...","info")
+				return false;
+			}
+			if (SysName == '') {
+				$.messager.alert("提示","请填写系统名称...","info")
+				return false;
+			}
+			if (StartDate == '') {
+				$.messager.alert("提示","请填写启用日期...","info")
+				return false;
+			}
+			var flg = $m({
+				ClassName:"DHCEPRFS.BL.BLCTSystem",
+				MethodName:"UpdateCTSystem",
+				ACTSystemID:CTSystemID,
+				ASysCode:SysCode,
+				ASysName:SysName,
+				AStartDate:StartDate,
+				ANotes:Notes
+			},false);
+			
+			if (parseInt(flg) == 0) {
+				$.messager.alert("错误提示", "保存失败!", 'info');
+				return;
+			}else{
+				$.messager.alert("提示", "保存成功!", 'info');
+			}
+			
+			$('#CtSystemDialog').window("close");
+			$("#ctsystemTable").datagrid("reload");
+
+		}
+	});
+	
+}(window));
+
+	</script>
+	<script src="../scripts/epr/js/fs.ctsystem.js"></script>
+</body>
 </html>
