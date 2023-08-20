@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-
+<csp:method name=OnPreHTTP arguments="" returntype=%Boolean>
+ i ##Class(websys.SessionEvents).SessionExpired() q 1
+ quit 1
+</csp:method>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>学生信息表</title>
+	<title>系统维护</title>
 	<HISUI/>
-
+	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
 </head>
 <body style="padding:10px;box-sizing:border-box;">
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
@@ -63,6 +66,7 @@
 	<script type="text/javascript">
 		var userID = '#(userID)#';
 		var userLocID = '#(userLocID)#';
+///function:js文件
         
 (function (win) {
 	$(function() {
@@ -194,7 +198,8 @@
 	
 }(window));
 
+        
 	</script>
-	<script src="../scripts/epr/js/fs.ctsystem.js"></script>
+
 </body>
 </html>
