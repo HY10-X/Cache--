@@ -11,11 +11,26 @@
 	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
 </head>
 <body style="padding:10px;box-sizing:border-box;">
+<div class="hisui-panel"  style="width:1000px;padding:10px" 
+			data-options="headerCls:'panel-header-gray',iconCls:'icon-search'">
+	<table cellpadding="5">
+		<tr>
+			<td>按学号查询</td>
+			<td>
+				<input id="sbyno" href="#" class="hisui-searchbox"/>
+			</td>
+            <td>按性别查询</td>
+			<td>
+				<input id="sbysex" href="#" class="hisui-searchbox"/>
+			</td>
+		</tr>				
+	</table>
+</div>
+
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
-		
 		<div data-options="region:'center',border:false">
 			<div class="hisui-panel"  data-options="title:'系统维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
-				<div data-options="region:'center',border:false" style="height:99%">
+				<div data-options="region:'center',border:false" style="height:95%">
 					<table id="ctsystemTable"></table>
 				</div>
 			</div>
@@ -94,12 +109,13 @@
 			pageList: [10, 20, 50],
 			url: $URL,
 			queryParams:{
-				ClassName: 'DHCEPRFS.BL.BLCTSystem',
-				QueryName: 'GetCTSystem'
+				ClassName: 'User.DHCStudentHYX',
+				QueryName: 'GetList'
 			},
 			columns: [[
-				//{ field: 'ck', checkbox: true },
-				{ field: 'SysCode', title: '系统代码', width: 150},
+				{ field: 'ck', checkbox: true },
+                { field: 'StRowId', title: '序号', width: 150},
+				{ field: 'StNo', title: '学号', width: 150},
 				{ field: 'SysName', title: '系统名称', width: 150},
 				{ field: 'StartDate', title: '启用日期', width: 150 },
 				{ field: 'Notes', title: '备注', width: 180 },
