@@ -6,12 +6,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>系统维护</title>
+	<title>学生信息维护</title>
 	<HISUI/>
 	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
 </head>
 <body style="padding:10px;box-sizing:border-box;">
-<div class="hisui-panel"  style="width:1000px;padding:10px" 
+<!--查询部分-->
+<div class="hisui-panel"  style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px"
 			data-options="headerCls:'panel-header-gray',iconCls:'icon-search'">
 	<table cellpadding="5">
 		<tr>
@@ -29,7 +30,7 @@
 
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
-			<div class="hisui-panel"  data-options="title:'系统维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
+			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
 				<div data-options="region:'center',border:false" style="height:95%">
 					<table id="ctsystemTable"></table>
 				</div>
@@ -82,10 +83,8 @@
 		var userID = '#(userID)#';
 		var userLocID = '#(userLocID)#';
 ///function:js文件
-        
 (function (win) {
 	$(function() {
-	
 		$HUI.datagrid('#ctsystemTable',{
 			fit: true,
 			border: false,
@@ -101,7 +100,14 @@
 				handler: function(){
 					editCtSystem("edit");
 				}
+             },{
+				iconCls: 'icon-remove',
+				text: '删除',
+				handler: function(){
+					editCtSystem("delete");     //编写删除数据的方法
+				}
 			}],
+            
 			rownumbers: true,
 			singleSelect: true,
 			pagination: true,
@@ -116,11 +122,9 @@
 				{ field: 'ck', checkbox: true },
                 { field: 'StRowId', title: '序号', width: 150},
 				{ field: 'StNo', title: '学号', width: 150},
-				{ field: 'SysName', title: '系统名称', width: 150},
-				{ field: 'StartDate', title: '启用日期', width: 150 },
-				{ field: 'Notes', title: '备注', width: 180 },
-				{ field: 'LastModifyDate', title: '更新日期', width: 150 },
-				{ field: 'LastModifyTime', title: '更新时间', width: 150 }
+				{ field: 'StName', title: '学生姓名', width: 150},
+				{ field: 'StGender', title: '学生性别', width: 150 },
+				{ field: 'StBirthday', title: '出生日期', width: 180 },
 			]]
 		});
 		// 字典类型新增、修改事件
