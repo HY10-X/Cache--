@@ -43,34 +43,36 @@
 	    <table class="form-table">
 			<tr>
 				<td class="form-r-label">
-					<label for="txtSysCode">系统代码</label>
+					<label for="txtStNo">学生学号</label>
 				</td>
 				<td>
-					<input class="hisui-textbox textbox" id="txtSysCode" style="width:250px;"></input>
+					<input class="hisui-textbox textbox" id="txtStNo" style="width:250px;"></input>
 				</td>
 			</tr>	
 			<tr>
 				<td class="form-r-label">
-					<label for="txtSysName">系统名称</label>
+					<label for="txtStName">学生姓名</label>
 				</td>
 				<td>
-					<input class="hisui-textbox textbox" id="txtSysName" style="width:250px;"></input>
+					<input class="hisui-textbox textbox" id="txtStName" style="width:250px;"></input>
 				</td>
 			</tr>
+
+			<tr>
+					<td class="form-r-label">
+						<label for="txtStGender">学生性别</label>
+					</td>
+					<td>
+						<input class="hisui-textbox textbox" id="txtStGender" style="width:250px;"></input>
+					</td>
+				</tr>	
+
 			<tr>
 				<td class="form-r-label">
-					<label for="txtStartDate">启用日期</label>
+					<label for="txtStBirthday">出生日期</label>
 				</td>
 				<td>
-					<input id="txtStartDate" class="hisui-datebox" style="width:256px;"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="form-r-label">
-					<label for="txtNotes">备注</label>
-				</td>
-				<td>
-					<input class="hisui-textbox textbox" id="txtNotes" style="width:250px;"></input>
+					<input id="txtStBirthday" class="hisui-datebox" style="width:256px;"/>
 				</td>
 			</tr>
 		</table>
