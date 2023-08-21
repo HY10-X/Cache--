@@ -19,20 +19,21 @@
 		<tr>
 			<td>按学号查询</td>
 			<td>
-				<input id="sbyno" href="#" class="hisui-searchbox"/>
+				<input id="sbyno" href="#" class="hisui-textbox"/>
 			</td>
             <td>选择性别</td>
 			<td>
 				<select id="loaddataCB" style="width:200px;">
-					<option value="sexall">全部</option>
-					<option value="sex0">男</option>
-					<option value="sex1">女</option>
-					<option value="sex2">未知性别</option>
+					<option value="">全部</option>
+					<option value="0">男</option>
+					<option value="1">女</option>
+					<option value="2">未知性别</option>
 				</select>
 			</td>
 		</tr>				
 	</table>
 </div>
+
 <!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
@@ -70,7 +71,11 @@
 						<label for="txtStGender">学生性别</label>
 					</td>
 					<td>
-					<select id="cbox" style="width:200px;"></select>
+						<select id="txtStGender" style="width:200px;">
+						<option value="0">男</option>
+						<option value="1">女</option>
+						<option value="2">未知性别</option>
+						</select>
 					</td>
 				</tr>	
 
@@ -126,6 +131,13 @@
 				handler: function(){
 					deleteStudent("delete");     //编写删除数据的方法
 				}
+			},
+			 {
+				iconCls: 'icon-search',
+				text: '查询',
+				handler: function(){
+					searchStudentByName("search");     //按姓名查询
+				}
 			}
 			],
             
@@ -148,6 +160,7 @@
 				{ field: 'StBirthday', title: '出生日期', width: 180 },
 			]]
 		});
+
 		// 字典类型删除事件
 		function deleteStudent(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
@@ -174,6 +187,7 @@
 			}
 		$("#ctsystemTable").datagrid("reload");
 		}
+
 		// 字典类型新增、修改事件
 		function editCtSystem(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
@@ -230,9 +244,8 @@
 			var RowId = $("#txtRowId").val();
 			var StNo = $("#txtStNo").val();
 			var StName = $("#txtStName").val();
-			var StGender = $("#txtStGender").val();
+			var StGender = $("#txtStGender").val();	//转换性别为数字
 			var StBirthday = $("#txtStBirthday").datebox('getValue');
-		
 			if (StNo == '') {
 				$.messager.alert("提示","请填写学生学号...","info")
 				return false;
