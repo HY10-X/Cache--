@@ -27,7 +27,7 @@
 		</tr>				
 	</table>
 </div>
-
+<!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
 			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
@@ -39,7 +39,8 @@
 	</div>
 	<!--编辑框-->
 	<div id="CtSystemDialog" style="width:420px;height:auto;padding:10px;display:none;">
-		<input class="textbox" id="txtACTSystemID" type="hidden" ></input>
+			<!--RowId输入框，默认隐藏-->
+		<input class="textbox" id="txtRowId" type="hidden" ></input>
 	    <table class="form-table">
 			<tr>
 				<td class="form-r-label">
@@ -137,20 +138,22 @@
 				return false;
 			}
 			$('#CtSystemDialog').css('display','block');
-			var _title = "修改系统类型",_icon="icon-w-edit"
+			var _title = "修改学生信息",_icon="icon-w-edit"
+			//如果选中，从选中里获取数据
 			if (op == "add") {
-				_title = "添加系统类型",_icon="icon-w-add";
-				$("#txtACTSystemID").val('');
-				$("#txtSysCode").val('');
-				$("#txtSysName").val('');
-				$("#txtStartDate").datebox('setValue','');
-				$("#txtNotes").val('');
+				_title = "添加学生信息",_icon="icon-w-add";
+				$("#txtRowId").val('');
+				$("#txtStNo").val('');
+				$("#txtStName").val('');
+				$("#txtStGender").val('');
+				$("#txtStBirthday").datebox('setValue','');
 			} else {
-				$("#txtACTSystemID").val(selected.SysID);
-				$("#txtSysCode").val(selected.SysCode);
-				$("#txtSysName").val(selected.SysName);
-				$("#txtStartDate").datebox('setValue',selected.StartDate);
-				$("#txtNotes").val(selected.Notes);
+				//根据搜索出的数据取值赋值
+				$("#txtRowId").val(selected.StRowId);
+				$("#txtStNo").val(selected.StNo);
+				$("#txtStName").val(selected.StName);
+				$("#txtStGender").val(selected.StGender);
+				$("#txtStBirthday").datebox('setValue',selected.StBirthday);
 			}
 
 			var CtSystemDialog = $HUI.dialog('#CtSystemDialog', {
@@ -163,9 +166,10 @@
 				collapsible:false,
 				buttons:[{
 					text:'保存',
+					//点击保存调用save方法
 						iconCls:'icon-w-save',
 						handler:function(){
-							saveCtSystem();
+							saveStudent();
 						}
 				},{
 				text:'关闭',
@@ -176,33 +180,39 @@
 				}]
 			});
 		}
-		// 系统保存操作
-		function saveCtSystem(){
-			var CTSystemID = $("#txtACTSystemID").val();
-			var SysCode = $("#txtSysCode").val();
-			var SysName = $("#txtSysName").val();
-			var StartDate = $("#txtStartDate").datebox('getValue');
-			var Notes = $("#txtNotes").val();
+		// 学生保存操作，从输入框取值，赋值给新变量继续操作
+		function saveStudent(){
+			var RowId = $("#txtRowId").val();
+			var StNo = $("##txtStNo").val();
+			var StName = $("#txtSysName").val();
+			var StGender = $("##txtStGender").val();
+			var StBirthday = $("#txtStBirthday").datebox('getValue');
+		
 			if (SysCode == '') {
-				$.messager.alert("提示","请填写系统代码...","info")
+				$.messager.alert("提示","请填写学生学号...","info")
 				return false;
 			}
-			if (SysName == '') {
-				$.messager.alert("提示","请填写系统名称...","info")
+			if (StName == '') {
+				$.messager.alert("提示","请填写学生姓名...","info")
 				return false;
 			}
-			if (StartDate == '') {
-				$.messager.alert("提示","请填写启用日期...","info")
+			if (StGender == '') {
+			$.messager.alert("提示","请填写学生性别...","info")
+			return false;
+			}
+			if (StBirthday == '') {
+				$.messager.alert("提示","请填写学生出生日期...","info")
 				return false;
 			}
 			var flg = $m({
-				ClassName:"DHCEPRFS.BL.BLCTSystem",
-				MethodName:"UpdateCTSystem",
-				ACTSystemID:CTSystemID,
-				ASysCode:SysCode,
-				ASysName:SysName,
-				AStartDate:StartDate,
-				ANotes:Notes
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"UpdateData",
+				StRowId:RowId,
+				StNo:StNo,
+				StName:StName,
+				StGender:StGender,
+				StBirthday:StBirthday
+				
 			},false);
 			
 			if (parseInt(flg) == 0) {
