@@ -188,7 +188,7 @@
 		function saveStudent(){
 			var RowId = $("#txtRowId").val();
 			var StNo = $("#txtStNo").val();
-			var StName = $("#txtSysName").val();
+			var StName = $("#txtStName").val();
 			var StGender = $("#txtStGender").val();
 			var StBirthday = $("#txtStBirthday").datebox('getValue');
 		
@@ -210,7 +210,7 @@
 			}
 			var flg = $m({
 				ClassName:"User.DHCStudentHYX",
-				MethodName:"UpdateData",
+				MethodName:"UpdateDataByex",
 				StRowId:RowId,
 				StNo:StNo,
 				StName:StName,
