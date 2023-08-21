@@ -103,13 +103,17 @@
 				handler: function(){
 					editCtSystem("edit");
 				}
-             },{
+             },
+			 /*
+			 {
 				iconCls: 'icon-remove',
 				text: '删除',
 				handler: function(){
 					editCtSystem("delete");     //编写删除数据的方法
 				}
-			}],
+			
+			}*/
+			],
             
 			rownumbers: true,
 			singleSelect: true,
@@ -183,12 +187,12 @@
 		// 学生保存操作，从输入框取值，赋值给新变量继续操作
 		function saveStudent(){
 			var RowId = $("#txtRowId").val();
-			var StNo = $("##txtStNo").val();
+			var StNo = $("#txtStNo").val();
 			var StName = $("#txtSysName").val();
-			var StGender = $("##txtStGender").val();
+			var StGender = $("#txtStGender").val();
 			var StBirthday = $("#txtStBirthday").datebox('getValue');
 		
-			if (SysCode == '') {
+			if (StNo == '') {
 				$.messager.alert("提示","请填写学生学号...","info")
 				return false;
 			}
