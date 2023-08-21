@@ -381,7 +381,6 @@ ClassMethod UpdateDataByex(StRowId As %String, StNo as%String,StName As %String,
                  return "性别输入错误"
             }
         }
-       
     }
     */
     if (StRowId=""){
@@ -416,9 +415,7 @@ ClassMethod UpdateDataByex(StRowId As %String, StNo as%String,StName As %String,
         }
         Else{
             Set result="add error"_$SYSTEM.OBJ.DISPLAYError(sc)   //显示错误信息 w $SYSTEM.Status.DISPLAYError
-
         }
-
     }
     Do oref.%Close()
     Quit result
@@ -447,8 +444,6 @@ ClassMethod UpdateDataByex(StRowId As %String, StNo as%String,StName As %String,
         }
 
     }
-	
-
 }
 
 
