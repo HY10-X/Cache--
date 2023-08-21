@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+
 <csp:method name=OnPreHTTP arguments="" returntype=%Boolean>
- i ##Class(websys.SessionEvents).SessionExpired() q 1
- quit 1
+ If ##Class(websys.SessionEvents).SessionExpired() Quit 1
+ Quit 1
 </csp:method>
 <html>
 <head>
@@ -20,14 +21,19 @@
 			<td>
 				<input id="sbyno" href="#" class="hisui-searchbox"/>
 			</td>
-            <td>按性别查询</td>
+            <td>选择性别</td>
 			<td>
-				<input id="sbysex" href="#" class="hisui-searchbox"/>
+				<select id="loaddataCB" style="width:200px;">
+					<option value="sexall">全部</option>
+					<option value="sex0">男</option>
+					<option value="sex1">女</option>
+					<option value="sex2">未知性别</option>
+				</select>
 			</td>
 		</tr>				
 	</table>
 </div>
-
+<!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
 			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
@@ -39,45 +45,48 @@
 	</div>
 	<!--编辑框-->
 	<div id="CtSystemDialog" style="width:420px;height:auto;padding:10px;display:none;">
-		<input class="textbox" id="txtACTSystemID" type="hidden" ></input>
+			<!--RowId输入框，默认隐藏-->
+		<input class="textbox" id="txtRowId" type="hidden" ></input>
 	    <table class="form-table">
 			<tr>
 				<td class="form-r-label">
-					<label for="txtSysCode">系统代码</label>
+					<label for="txtStNo">学生学号</label>
 				</td>
 				<td>
-					<input class="hisui-textbox textbox" id="txtSysCode" style="width:250px;"></input>
+					<input class="hisui-textbox textbox" id="txtStNo" style="width:250px;"></input>
 				</td>
 			</tr>	
 			<tr>
 				<td class="form-r-label">
-					<label for="txtSysName">系统名称</label>
+					<label for="txtStName">学生姓名</label>
 				</td>
 				<td>
-					<input class="hisui-textbox textbox" id="txtSysName" style="width:250px;"></input>
+					<input class="hisui-textbox textbox" id="txtStName" style="width:250px;"></input>
 				</td>
 			</tr>
+
+			<tr>
+					<td class="form-r-label">
+						<label for="txtStGender">学生性别</label>
+					</td>
+					<td>
+					<select id="cbox" style="width:200px;"></select>
+					</td>
+				</tr>	
+
 			<tr>
 				<td class="form-r-label">
-					<label for="txtStartDate">启用日期</label>
+					<label for="txtStBirthday">出生日期</label>
 				</td>
 				<td>
-					<input id="txtStartDate" class="hisui-datebox" style="width:256px;"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="form-r-label">
-					<label for="txtNotes">备注</label>
-				</td>
-				<td>
-					<input class="hisui-textbox textbox" id="txtNotes" style="width:250px;"></input>
+					<input id="txtStBirthday" class="hisui-datebox" style="width:256px;"/>
 				</td>
 			</tr>
 		</table>
 	</div>
 	<script language="cache" runat="server">
-		s userID = %session.Get("LOGON.USERID")
-		s userLocID = %session.Get("LOGON.CTLOCID")
+		Set userID = %session.Get("LOGON.USERID")
+		Set userLocID = %session.Get("LOGON.CTLOCID")
 	</script>
 	<script type="text/javascript">
 		var userID = '#(userID)#';
@@ -85,9 +94,18 @@
 ///function:js文件
 (function (win) {
 	$(function() {
+		//设定下拉框
+		$("#loaddataCB").combobox({  
+			valueField: 'id',
+			textField: 'text',
+			editable:false,
+			allowNull:false
+		});
+	
 		$HUI.datagrid('#ctsystemTable',{
 			fit: true,
 			border: false,
+			
 			toolbar: [{
 				iconCls: 'icon-add',
 				text: '新增',
@@ -100,13 +118,16 @@
 				handler: function(){
 					editCtSystem("edit");
 				}
-             },{
+             },
+			 
+			 {
 				iconCls: 'icon-remove',
 				text: '删除',
 				handler: function(){
-					editCtSystem("delete");     //编写删除数据的方法
+					deleteStudent("delete");     //编写删除数据的方法
 				}
-			}],
+			}
+			],
             
 			rownumbers: true,
 			singleSelect: true,
@@ -127,6 +148,32 @@
 				{ field: 'StBirthday', title: '出生日期', width: 180 },
 			]]
 		});
+		// 字典类型删除事件
+		function deleteStudent(op){
+			var selected = $("#ctsystemTable").datagrid('getSelected');
+			if (( op == "delete")&&(!selected)) {
+				$.messager.alert("提示","请选择一条记录...","info")
+				return false;
+			}
+			//从前端取值
+			$("#txtRowId").val(selected.StRowId);
+			$('#CtSystemDialog').css('display','block');
+			// 学生删除操作，从输入框取值，赋值给新变量继续操作
+			var RowId = $("#txtRowId").val();
+			var flg = $m({
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"DeleteData",
+				StRowId:RowId,
+			},false);
+			
+			if (parseInt(flg) == 0) {
+				$.messager.alert("错误提示", "删除失败!", 'info');
+				return;
+			}else{
+				$.messager.alert("提示", "删除成功!", 'info');
+			}
+		$("#ctsystemTable").datagrid("reload");
+		}
 		// 字典类型新增、修改事件
 		function editCtSystem(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
@@ -135,20 +182,22 @@
 				return false;
 			}
 			$('#CtSystemDialog').css('display','block');
-			var _title = "修改系统类型",_icon="icon-w-edit"
+			var _title = "修改学生信息",_icon="icon-w-edit"
+			//如果选中，从选中里获取数据
 			if (op == "add") {
-				_title = "添加系统类型",_icon="icon-w-add";
-				$("#txtACTSystemID").val('');
-				$("#txtSysCode").val('');
-				$("#txtSysName").val('');
-				$("#txtStartDate").datebox('setValue','');
-				$("#txtNotes").val('');
+				_title = "添加学生信息",_icon="icon-w-add";
+				$("#txtRowId").val('');
+				$("#txtStNo").val('');
+				$("#txtStName").val('');
+				$("#txtStGender").val('');
+				$("#txtStBirthday").datebox('setValue','');
 			} else {
-				$("#txtACTSystemID").val(selected.SysID);
-				$("#txtSysCode").val(selected.SysCode);
-				$("#txtSysName").val(selected.SysName);
-				$("#txtStartDate").datebox('setValue',selected.StartDate);
-				$("#txtNotes").val(selected.Notes);
+				//根据搜索出的数据取值赋值
+				$("#txtRowId").val(selected.StRowId);
+				$("#txtStNo").val(selected.StNo);
+				$("#txtStName").val(selected.StName);
+				$("#txtStGender").val(selected.StGender);
+				$("#txtStBirthday").datebox('setValue',selected.StBirthday);
 			}
 
 			var CtSystemDialog = $HUI.dialog('#CtSystemDialog', {
@@ -161,9 +210,10 @@
 				collapsible:false,
 				buttons:[{
 					text:'保存',
+					//点击保存调用save方法
 						iconCls:'icon-w-save',
 						handler:function(){
-							saveCtSystem();
+							saveStudent();
 						}
 				},{
 				text:'关闭',
@@ -174,33 +224,40 @@
 				}]
 			});
 		}
-		// 系统保存操作
-		function saveCtSystem(){
-			var CTSystemID = $("#txtACTSystemID").val();
-			var SysCode = $("#txtSysCode").val();
-			var SysName = $("#txtSysName").val();
-			var StartDate = $("#txtStartDate").datebox('getValue');
-			var Notes = $("#txtNotes").val();
-			if (SysCode == '') {
-				$.messager.alert("提示","请填写系统代码...","info")
+		
+		// 学生保存操作，从输入框取值，赋值给新变量继续操作
+		function saveStudent(){
+			var RowId = $("#txtRowId").val();
+			var StNo = $("#txtStNo").val();
+			var StName = $("#txtStName").val();
+			var StGender = $("#txtStGender").val();
+			var StBirthday = $("#txtStBirthday").datebox('getValue');
+		
+			if (StNo == '') {
+				$.messager.alert("提示","请填写学生学号...","info")
 				return false;
 			}
-			if (SysName == '') {
-				$.messager.alert("提示","请填写系统名称...","info")
+			if (StName == '') {
+				$.messager.alert("提示","请填写学生姓名...","info")
 				return false;
 			}
-			if (StartDate == '') {
-				$.messager.alert("提示","请填写启用日期...","info")
+			if (StGender == '') {
+			$.messager.alert("提示","请填写学生性别...","info")
+			return false;
+			}
+			if (StBirthday == '') {
+				$.messager.alert("提示","请填写学生出生日期...","info")
 				return false;
 			}
 			var flg = $m({
-				ClassName:"DHCEPRFS.BL.BLCTSystem",
-				MethodName:"UpdateCTSystem",
-				ACTSystemID:CTSystemID,
-				ASysCode:SysCode,
-				ASysName:SysName,
-				AStartDate:StartDate,
-				ANotes:Notes
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"UpdateDataByex",
+				StRowId:RowId,
+				StNo:StNo,
+				StName:StName,
+				StGender:StGender,
+				StBirthday:StBirthday
+				
 			},false);
 			
 			if (parseInt(flg) == 0) {
@@ -214,11 +271,13 @@
 			$("#ctsystemTable").datagrid("reload");
 
 		}
+		
 	});
 	
-}(window));
+		}(window));
+		
 
-        
+
 	</script>
 
 </body>

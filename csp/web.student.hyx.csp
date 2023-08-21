@@ -101,10 +101,11 @@
 			editable:false,
 			allowNull:false
 		});
-		 	
+	
 		$HUI.datagrid('#ctsystemTable',{
 			fit: true,
 			border: false,
+			
 			toolbar: [{
 				iconCls: 'icon-add',
 				text: '新增',
@@ -125,7 +126,6 @@
 				handler: function(){
 					deleteStudent("delete");     //编写删除数据的方法
 				}
-			
 			}
 			],
             
@@ -224,6 +224,7 @@
 				}]
 			});
 		}
+		
 		// 学生保存操作，从输入框取值，赋值给新变量继续操作
 		function saveStudent(){
 			var RowId = $("#txtRowId").val();
@@ -270,6 +271,7 @@
 			$("#ctsystemTable").datagrid("reload");
 
 		}
+		
 	});
 	
 		}(window));
