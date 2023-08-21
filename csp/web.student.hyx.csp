@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <csp:method name=OnPreHTTP arguments="" returntype=%Boolean>
  i ##Class(websys.SessionEvents).SessionExpired() q 1
  quit 1
@@ -104,15 +105,15 @@
 					editCtSystem("edit");
 				}
              },
-			 /*
+			 
 			 {
 				iconCls: 'icon-remove',
 				text: '删除',
 				handler: function(){
-					editCtSystem("delete");     //编写删除数据的方法
+					deleteStudent("delete");     //编写删除数据的方法
 				}
 			
-			}*/
+			}
 			],
             
 			rownumbers: true,
@@ -134,6 +135,32 @@
 				{ field: 'StBirthday', title: '出生日期', width: 180 },
 			]]
 		});
+		// 字典类型删除事件
+		function deleteStudent(op){
+			var selected = $("#ctsystemTable").datagrid('getSelected');
+			if (( op == "delete")&&(!selected)) {
+				$.messager.alert("提示","请选择一条记录...","info")
+				return false;
+			}
+			//从前端取值
+			$("#txtRowId").val(selected.StRowId);
+			$('#CtSystemDialog').css('display','block');
+			// 学生删除操作，从输入框取值，赋值给新变量继续操作
+			var RowId = $("#txtRowId").val();
+			var flg = $m({
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"DeleteData",
+				StRowId:RowId,
+			},false);
+			
+			if (parseInt(flg) == 0) {
+				$.messager.alert("错误提示", "删除失败!", 'info');
+				return;
+			}else{
+				$.messager.alert("提示", "删除成功!", 'info');
+			}
+		$("#ctsystemTable").datagrid("reload");
+		}
 		// 字典类型新增、修改事件
 		function editCtSystem(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
