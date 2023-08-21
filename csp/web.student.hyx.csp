@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
 <csp:method name=OnPreHTTP arguments="" returntype=%Boolean>
- i ##Class(websys.SessionEvents).SessionExpired() q 1
- quit 1
+ If ##Class(websys.SessionEvents).SessionExpired() Quit 1
+ Quit 1
 </csp:method>
 <html>
 <head>
@@ -21,9 +21,14 @@
 			<td>
 				<input id="sbyno" href="#" class="hisui-searchbox"/>
 			</td>
-            <td>按性别查询</td>
+            <td>选择性别</td>
 			<td>
-				<input id="sbysex" href="#" class="hisui-searchbox"/>
+				<select id="loaddataCB" style="width:200px;">
+					<option value="sexall">全部</option>
+					<option value="sex0">男</option>
+					<option value="sex1">女</option>
+					<option value="sex2">未知性别</option>
+				</select>
 			</td>
 		</tr>				
 	</table>
@@ -65,7 +70,7 @@
 						<label for="txtStGender">学生性别</label>
 					</td>
 					<td>
-						<input class="hisui-textbox textbox" id="txtStGender" style="width:250px;"></input>
+					<select id="cbox" style="width:200px;"></select>
 					</td>
 				</tr>	
 
@@ -80,8 +85,8 @@
 		</table>
 	</div>
 	<script language="cache" runat="server">
-		s userID = %session.Get("LOGON.USERID")
-		s userLocID = %session.Get("LOGON.CTLOCID")
+		Set userID = %session.Get("LOGON.USERID")
+		Set userLocID = %session.Get("LOGON.CTLOCID")
 	</script>
 	<script type="text/javascript">
 		var userID = '#(userID)#';
@@ -89,6 +94,14 @@
 ///function:js文件
 (function (win) {
 	$(function() {
+		//设定下拉框
+		$("#loaddataCB").combobox({  
+			valueField: 'id',
+			textField: 'text',
+			editable:false,
+			allowNull:false
+		});
+		 	
 		$HUI.datagrid('#ctsystemTable',{
 			fit: true,
 			border: false,
@@ -259,9 +272,10 @@
 		}
 	});
 	
-}(window));
+		}(window));
+		
 
-        
+
 	</script>
 
 </body>
