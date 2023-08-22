@@ -33,20 +33,12 @@
 		</tr>				
 	</table>
 </div>
-
-<div id="tb">
-
-    <input class="easyui-textbox" id="bname" name="bname" style="width:20%;padding-left: 10px" data-options="label:'书名:',required:true">
-
-    <a id="btn-search" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">搜索</a>
-
-</div>
-
 <!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
 			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
 				<div data-options="region:'center',border:false" style="height:95%">
+					<table id="studenttoolbar"></table>
 					<table id="ctsystemTable"></table>
 
 				</div>
@@ -163,10 +155,9 @@
 			],
 	
 		});
-
-			
-
-		HUI.datagrid(
+			//初始化表格
+			function initable(){
+			$HUI.datagrid(
 			'#ctsystemTable',{
 			fit: true,
 			border: false,
@@ -189,6 +180,10 @@
 				{ field: 'StBirthday', title: '出生日期', width: 180 },
 			]]
 		});
+			
+			}
+
+		
 
 		// 字典类型删除事件
 		function deleteStudent(op){
