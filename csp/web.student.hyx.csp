@@ -9,16 +9,6 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>学生信息维护</title>
 	<HISUI/>
-	<style>
-	.hisui-panel{
-			height:50%  !important
-		}
-	#studenttoolbar{
-		height:5px !important
-	}
-	</style>
-
-
 	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
 </head>
 <body style="padding:10px;box-sizing:border-box;">
@@ -46,12 +36,11 @@
 <!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
-
-			<div class="hisui-panel panel50"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;height:50% !important;">
-				
-				<div data-options="region:'center',border:false" style="height:90%">
+			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
+				<div data-options="region:'center',border:false" style="height:95%">
 					<table id="studenttoolbar"></table>
 					<table id="ctsystemTable"></table>
+
 				</div>
 			</div>
 		</div>
@@ -122,7 +111,6 @@
 		});
 		
 		$HUI.datagrid('#studenttoolbar',{
-		
 			toolbar: [
 			{
 				iconCls: 'icon-search',
@@ -173,10 +161,19 @@
 				}
 			},
 			],
-			
+	
 		});
 			//初始化表格
 			function initable(){
+			//从前端取值
+			var StName = $("#sbyname").val();
+			alert(StName);
+			var flg = $m({
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"GetFrontNameExucet",
+				FrontName:StName,
+			},false);
+
 			$HUI.datagrid(
 			'#ctsystemTable',{
 			fit: true,
@@ -189,7 +186,7 @@
 			url: $URL,
 			queryParams:{
 				ClassName: 'User.DHCStudentHYX',
-				QueryName: 'GetList'
+				QueryName: 'GetListByName'
 			},
 			columns: [[
 				{ field: 'ck', checkbox: true },
@@ -350,7 +347,7 @@
 (window));
 		
 
-
+//调用初始化表格成功
 	</script>
 
 </body>
