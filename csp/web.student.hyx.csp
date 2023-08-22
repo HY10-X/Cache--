@@ -23,7 +23,7 @@
 			</td>
             <td>选择性别</td>
 			<td>
-				<select id="loaddataCB"  style="width:200px;">
+				<select id="loaddataCB" style="width:200px;">
 					<option value="">全部</option>
 					<option value="0">男</option>
 					<option value="1">女</option>
@@ -32,6 +32,14 @@
 			</td>
 		</tr>				
 	</table>
+</div>
+
+<div id="tb">
+
+    <input class="easyui-textbox" id="bname" name="bname" style="width:20%;padding-left: 10px" data-options="label:'书名:',required:true">
+
+    <a id="btn-search" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">搜索</a>
+
 </div>
 
 <!--查询表格-->
@@ -90,6 +98,9 @@
 			</tr>
 		</table>
 	</div>
+
+
+
 	<script language="cache" runat="server">
 		Set userID = %session.Get("LOGON.USERID")
 		Set userLocID = %session.Get("LOGON.CTLOCID")
@@ -99,7 +110,6 @@
 		var userLocID = '#(userLocID)#';
 ///function:js文件
 (function (win) {
-	$(function() {
 		//设定下拉框
 		$("#loaddataCB").combobox({  
 			valueField: 'id',
@@ -107,11 +117,8 @@
 			editable:false,
 			allowNull:false
 		});
-		$HUI.datagrid(
-			'#ctsystemTable',{
-			fit: true,
-			border: false,
-			
+		
+		$HUI.datagrid('#studenttoolbar',{
 			toolbar: [{
 				iconCls: 'icon-add',
 				text: '新增',
@@ -154,7 +161,15 @@
 				}
 			},
 			],
-            
+	
+		});
+
+			
+
+		HUI.datagrid(
+			'#ctsystemTable',{
+			fit: true,
+			border: false,
 			rownumbers: true,
 			singleSelect: true,
 			pagination: true,
@@ -314,9 +329,10 @@
 
 		}
 		
-	});
 	
-		}(window));
+	
+}
+(window));
 		
 
 
