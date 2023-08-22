@@ -17,28 +17,30 @@
 			data-options="headerCls:'panel-header-gray',iconCls:'icon-search'">
 	<table cellpadding="5">
 		<tr>
-			<td>按学号查询</td>
+			<td>按姓名查询</td>
 			<td>
-				<input id="sbyno" href="#" class="hisui-searchbox"/>
+				<input id="sbyname" href="#" class="hisui-textbox"/>
 			</td>
             <td>选择性别</td>
 			<td>
 				<select id="loaddataCB" style="width:200px;">
-					<option value="sexall">全部</option>
-					<option value="sex0">男</option>
-					<option value="sex1">女</option>
-					<option value="sex2">未知性别</option>
+					<option value="">全部</option>
+					<option value="0">男</option>
+					<option value="1">女</option>
+					<option value="2">未知性别</option>
 				</select>
 			</td>
 		</tr>				
 	</table>
 </div>
+
 <!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
 			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
 				<div data-options="region:'center',border:false" style="height:95%">
 					<table id="ctsystemTable"></table>
+
 				</div>
 			</div>
 		</div>
@@ -70,7 +72,11 @@
 						<label for="txtStGender">学生性别</label>
 					</td>
 					<td>
-					<select id="cbox" style="width:200px;"></select>
+						<select id="txtStGender" style="width:200px;">
+						<option value="0">男</option>
+						<option value="1">女</option>
+						<option value="2">未知性别</option>
+						</select>
 					</td>
 				</tr>	
 
@@ -101,8 +107,8 @@
 			editable:false,
 			allowNull:false
 		});
-	
-		$HUI.datagrid('#ctsystemTable',{
+		$HUI.datagrid(
+			'#ctsystemTable',{
 			fit: true,
 			border: false,
 			
@@ -119,14 +125,34 @@
 					editCtSystem("edit");
 				}
              },
-			 
 			 {
 				iconCls: 'icon-remove',
 				text: '删除',
 				handler: function(){
 					deleteStudent("delete");     //编写删除数据的方法
 				}
-			}
+			},
+			 {
+				iconCls: 'icon-search',
+				text: '按照姓名查询',
+				handler: function(){
+					searchStudentByName();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			 {
+				iconCls: 'icon-search',
+				text: '按照性别查询',
+				handler: function(){
+					searchStudentByGender();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			 {
+				iconCls: 'icon-unuse',
+				text: '取消选择',
+				handler: function(){
+					cancelselect();     //编写删除数据的方法
+				}
+			},
 			],
             
 			rownumbers: true,
@@ -148,6 +174,7 @@
 				{ field: 'StBirthday', title: '出生日期', width: 180 },
 			]]
 		});
+
 		// 字典类型删除事件
 		function deleteStudent(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
@@ -174,6 +201,22 @@
 			}
 		$("#ctsystemTable").datagrid("reload");
 		}
+			//取消选中
+		function cancelselect(){
+			$('#ctsystemTable').datagrid("unselectAll");	
+		}
+
+
+			// 按照姓名查找学生
+			//  点击搜索按钮
+		function searchStudentByName(){
+			alert("点击")
+            $('#ctsystemTable').datagrid("unselectAll");
+            //$('#ctsystemTable').datagrid({ pageNumber: 1,queryParams: { 
+			//StName: $("#sbyname").val() } });
+		}
+			
+
 		// 字典类型新增、修改事件
 		function editCtSystem(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
@@ -230,9 +273,8 @@
 			var RowId = $("#txtRowId").val();
 			var StNo = $("#txtStNo").val();
 			var StName = $("#txtStName").val();
-			var StGender = $("#txtStGender").val();
+			var StGender = $("#txtStGender").val();	//转换性别为数字
 			var StBirthday = $("#txtStBirthday").datebox('getValue');
-		
 			if (StNo == '') {
 				$.messager.alert("提示","请填写学生学号...","info")
 				return false;

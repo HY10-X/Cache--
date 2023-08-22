@@ -17,9 +17,9 @@
 			data-options="headerCls:'panel-header-gray',iconCls:'icon-search'">
 	<table cellpadding="5">
 		<tr>
-			<td>按学号查询</td>
+			<td>按姓名查询</td>
 			<td>
-				<input id="sbyno" href="#" class="hisui-textbox"/>
+				<input id="sbyname" href="#" class="hisui-textbox"/>
 			</td>
             <td>选择性别</td>
 			<td>
@@ -40,6 +40,7 @@
 			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
 				<div data-options="region:'center',border:false" style="height:95%">
 					<table id="ctsystemTable"></table>
+
 				</div>
 			</div>
 		</div>
@@ -106,8 +107,8 @@
 			editable:false,
 			allowNull:false
 		});
-	
-		$HUI.datagrid('#ctsystemTable',{
+		$HUI.datagrid(
+			'#ctsystemTable',{
 			fit: true,
 			border: false,
 			
@@ -124,7 +125,6 @@
 					editCtSystem("edit");
 				}
              },
-			 
 			 {
 				iconCls: 'icon-remove',
 				text: '删除',
@@ -134,11 +134,25 @@
 			},
 			 {
 				iconCls: 'icon-search',
-				text: '查询',
+				text: '按照姓名查询',
 				handler: function(){
-					searchStudentByName("search");     //按姓名查询
+					searchStudentByName();     //按姓名查询,想办法给getlist返回一个值
 				}
-			}
+			},
+			 {
+				iconCls: 'icon-search',
+				text: '按照性别查询',
+				handler: function(){
+					searchStudentByGender();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			 {
+				iconCls: 'icon-unuse',
+				text: '取消选择',
+				handler: function(){
+					cancelselect();     //编写删除数据的方法
+				}
+			},
 			],
             
 			rownumbers: true,
@@ -187,6 +201,21 @@
 			}
 		$("#ctsystemTable").datagrid("reload");
 		}
+			//取消选中
+		function cancelselect(){
+			$('#ctsystemTable').datagrid("unselectAll");	
+		}
+
+
+			// 按照姓名查找学生
+			//  点击搜索按钮
+		function searchStudentByName(){
+			alert("点击")
+            $('#ctsystemTable').datagrid("unselectAll");
+            //$('#ctsystemTable').datagrid({ pageNumber: 1,queryParams: { 
+			//StName: $("#sbyname").val() } });
+		}
+			
 
 		// 字典类型新增、修改事件
 		function editCtSystem(op){
