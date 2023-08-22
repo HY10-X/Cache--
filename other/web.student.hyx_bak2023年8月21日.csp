@@ -72,7 +72,7 @@
 						<label for="txtStGender">学生性别</label>
 					</td>
 					<td>
-						<select id="txtStGender" style="width:200px;">
+						<select id="txtStGender" style="width:250px;">
 						<option value="0">男</option>
 						<option value="1">女</option>
 						<option value="2">未知性别</option>
