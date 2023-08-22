@@ -111,7 +111,15 @@
 		});
 		
 		$HUI.datagrid('#studenttoolbar',{
-			toolbar: [{
+			toolbar: [
+			{
+				iconCls: 'icon-search',
+				text: '初始化查询调用',
+				handler: function(){
+					initable();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			{
 				iconCls: 'icon-add',
 				text: '新增',
 				handler: function(){
@@ -156,7 +164,7 @@
 	
 		});
 			//初始化表格
-			
+			function initable(){
 			$HUI.datagrid(
 			'#ctsystemTable',{
 			fit: true,
@@ -181,7 +189,7 @@
 			]]
 		});
 			
-			
+			}
 
 		
 
@@ -330,7 +338,7 @@
 (window));
 		
 
-//主要备份重新封装的函数
+//调用初始化表格成功
 	</script>
 
 </body>

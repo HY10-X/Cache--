@@ -9,6 +9,16 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>学生信息维护</title>
 	<HISUI/>
+	<style>
+	.hisui-panel{
+			height:50%  !important
+		}
+	#studenttoolbar{
+		height:5px !important
+	}
+	</style>
+
+
 	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
 </head>
 <body style="padding:10px;box-sizing:border-box;">
@@ -36,11 +46,12 @@
 <!--查询表格-->
 	<div class="hisui-layout layout" data-options="fit:true,border:false">
 		<div data-options="region:'center',border:false">
-			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
-				<div data-options="region:'center',border:false" style="height:95%">
+
+			<div class="hisui-panel panel50"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;height:50% !important;">
+				
+				<div data-options="region:'center',border:false" style="height:90%">
 					<table id="studenttoolbar"></table>
 					<table id="ctsystemTable"></table>
-
 				</div>
 			</div>
 		</div>
@@ -111,7 +122,16 @@
 		});
 		
 		$HUI.datagrid('#studenttoolbar',{
-			toolbar: [{
+		
+			toolbar: [
+			{
+				iconCls: 'icon-search',
+				text: '初始化查询调用',
+				handler: function(){
+					initable();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			{
 				iconCls: 'icon-add',
 				text: '新增',
 				handler: function(){
@@ -153,7 +173,7 @@
 				}
 			},
 			],
-	
+			
 		});
 			//初始化表格
 			function initable(){
