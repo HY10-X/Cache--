@@ -23,7 +23,7 @@
 			</td>
             <td>选择性别</td>
 			<td>
-				<select id="loaddataCB" style="width:200px;">
+				<select id="loaddataCB"  style="width:200px;">
 					<option value="">全部</option>
 					<option value="0">男</option>
 					<option value="1">女</option>
