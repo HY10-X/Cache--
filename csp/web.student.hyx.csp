@@ -209,6 +209,7 @@
 		var selectedOption = selectBox.options[selectBox.selectedIndex];  
 		var selectedValue = selectedOption.value;  
 		alert(selectedValue);  
+		
 		$HUI.datagrid(
 			'#ctsystemTable',{
 			fit: true,
