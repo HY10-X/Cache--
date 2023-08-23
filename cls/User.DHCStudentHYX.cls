@@ -250,12 +250,14 @@ ClassMethod GetListClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter = Get
 	Kill ^CacheTemp(repid)
 	Quit $$$OK
 }
+
 /// function:面向对象的方法实现新增操作
 /// input:StNo,StName,StGender,StBirthday
 /// others:d ##class(User.DHCStudentHYX).AddData("8888","张新增","1","2001-01-01")
 /// w ##class(User.DHCStudentHYX).AddData("9","张新增2","1","2001-01-01")
 ClassMethod AddData(StNo As %String, StName As %String, StGender As %String, StBirthday As %Date) As %String
-{   
+{
+   
     Quit:(StNo="")||(StName="") "学号或姓名为空"
     s RowIdIdenti=0
     s Count=0
@@ -297,12 +299,14 @@ ClassMethod AddData(StNo As %String, StName As %String, StGender As %String, StB
     Do oref.%Close()
     Quit result
 }
+
 /// function:更改学生信息
 /// table：DHC_StudenHYX
 /// input:StRowId,StNo,StName,StGender,StBirthday
 /// output:
 /// other:w ##class(User.DHCStudentHYX).UpdateData("5","8888","张xiugai","0","2001-02-21")
-ClassMethod UpdateData(StRowId As %String, StNo as%String,StName As %String, StGender As %String, StBirthday As %Date)as %String {
+ClassMethod UpdateData(StRowId As %String, StNo As %String, StName As %String, StGender As %String, StBirthday As %Date) As %String
+{
 	q:(StRowId="") "RowId为空"
     Quit:(StNo="")||(StName="") "学号或姓名为空"_StRowId 
     //判断性别输入是否正确
@@ -336,12 +340,14 @@ ClassMethod UpdateData(StRowId As %String, StNo as%String,StName As %String, StG
 		q result
 	}
 }
-///function:删除数据
+
+/// function:删除数据
 /// table：DHC_StudentHYX
 /// input:StRowId（不为空）
 /// output:
 /// other:w ##class(User.DHCStudentHYX).DeleteData("6")
-ClassMethod DeleteData(StRowId AS %String) as %String{
+ClassMethod DeleteData(StRowId As %String) As %String
+{
 	Quit:StRowId="" "RowId为空"
 	Set obj=##class(User.DHCStudentHYX).%OpenId(StRowId)
 	If (obj){	//通过%OpenId判断数据是否存在
@@ -363,16 +369,15 @@ ClassMethod DeleteData(StRowId AS %String) as %String{
     return result
 }
 
-
-
-///按照范例重新编写增删改查
+/// 按照范例重新编写增删改查
 /// 
 /// function:更改学生信息,新增学生信息
 /// table：DHC_StudenHYX
 /// input:StRowId,StNo,StName,StGender,StBirthday
 /// output:
 /// other:w ##class(User.DHCStudentHYX).UpdateData("5","8888","张xiugai","0","2001-02-21")
-ClassMethod UpdateDataByex(StRowId As %String, StNo as%String,StName As %String, StGender As %String, StBirthday As %Date)as %String {
+ClassMethod UpdateDataByex(StRowId As %String, StNo As %String, StName As %String, StGender As %String, StBirthday As %Date) As %String
+{
     //前端限制性别选择
     /*
     if (StGender'=0){
@@ -446,8 +451,6 @@ ClassMethod UpdateDataByex(StRowId As %String, StNo as%String,StName As %String,
     }
 }
 
-
-
 /// function:编写使用按照姓名查询query
 /// input:StName
 /// GetList:入参、GetListExecute：执行，GetListFetch：从执行取数据出参，GetListClose：关闭临时global
@@ -512,10 +515,13 @@ ClassMethod GetListByNameClose(ByRef qHandle As %Binary) As %Status [ PlaceAfter
 	Kill ^CacheTemp(repid)
 	Quit $$$OK
 }
+
 /// 接受前端数据调用query
-///d ##class(User.DHCStudentHYX).GetFrontNameExucet("张三")
-ClassMethod GetFrontNameExucet(FrontName As %String)as %String {
+/// d ##class(User.DHCStudentHYX).GetFrontNameExucet("张三")
+ClassMethod GetFrontNameExucet(FrontName As %String) As %String
+{
     d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetListByName",FrontName)
-}
+    Quit $$$OK
 }
 
+}
