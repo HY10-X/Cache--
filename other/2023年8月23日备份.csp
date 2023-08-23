@@ -177,7 +177,7 @@
 			url: $URL,
 			queryParams:{
 				ClassName: 'User.DHCStudentHYX',
-				QueryName: 'GetList'
+				QueryName: 'GetListByName'
 			},
 			columns: [[
 				{ field: 'ck', checkbox: true },
@@ -191,6 +191,22 @@
 			
 			}
 
+
+			// 按照姓名查找学生
+			//  点击搜索按钮
+			function searchStudentByName(){
+			//从前端取值
+			var StName = $("#sbyname").val();
+			alert(StName);
+			var flg = $m({
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"GetFrontNameExucet",
+				FrontName:StName,
+			},false);
+
+		
+			
+			}
 		
 
 		// 字典类型删除事件
@@ -224,17 +240,7 @@
 			$('#ctsystemTable').datagrid("unselectAll");	
 		}
 
-
-			// 按照姓名查找学生
-			//  点击搜索按钮
-		function searchStudentByName(){
-			alert("点击")
-            $('#ctsystemTable').datagrid("unselectAll");
-            //$('#ctsystemTable').datagrid({ pageNumber: 1,queryParams: { 
-			//StName: $("#sbyname").val() } });
-		}
 			
-
 		// 字典类型新增、修改事件
 		function editCtSystem(op){
 			var selected = $("#ctsystemTable").datagrid('getSelected');
