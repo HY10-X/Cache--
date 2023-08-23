@@ -13,7 +13,7 @@
 </head>
 <body style="padding:10px;box-sizing:border-box;">
 <!--查询部分-->
-<div class="hisui-panel"  style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px"
+<div style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px"
 			data-options="headerCls:'panel-header-gray',iconCls:'icon-search'">
 	<table cellpadding="5">
 		<tr>
@@ -102,14 +102,6 @@
 		var userLocID = '#(userLocID)#';
 ///function:js文件
 (function (win) {
-		//设定下拉框
-		$("#loaddataCB").combobox({  
-			valueField: 'id',
-			textField: 'text',
-			editable:false,
-			allowNull:false
-		});
-		
 		$HUI.datagrid('#studenttoolbar',{
 			toolbar: [
 			{
@@ -192,22 +184,59 @@
 			}
 
 
-			// 按照姓名查找学生
-			//  点击搜索按钮
-			function searchStudentByName(){
-			//从前端取值
-			var StName = $("#sbyname").val();
-			alert(StName);
-			var flg = $m({
-				ClassName:"User.DHCStudentHYX",
-				MethodName:"GetFrontNameExucet",
-				FrontName:StName,
-			},false);
+		// 按照姓名查找学生
+		//  点击搜索按钮
+		function searchStudentByName(){
+		//从前端取值
+		var StName = $("#sbyname").val();
+		alert(StName);
+		var flg = $m({
+			ClassName:"User.DHCStudentHYX",
+			MethodName:"GetFrontNameExucet",
+			FrontName:StName,
+		},false);
 
+
+
+
+
+
+		}
+		//性别查找学生
+		function searchStudentByGender(){
+		   
+		var selectBox = document.getElementById("loaddataCB");  
+		var selectedOption = selectBox.options[selectBox.selectedIndex];  
+		var selectedValue = selectedOption.value;  
+		alert(selectedValue);  
+		$HUI.datagrid(
+			'#ctsystemTable',{
+			fit: true,
+			border: false,
+			rownumbers: true,
+			singleSelect: true,
+			pagination: true,
+			pageSize: 20,
+			pageList: [10, 20, 50],
+			url: $URL,
+			queryParams:{
+				ClassName: 'User.DHCStudentHYX',
+				QueryName: 'GetListByName'
+			},
+			columns: [[
+				{ field: 'ck', checkbox: true },
+                { field: 'StRowId', title: '序号', width: 150},
+				{ field: 'StNo', title: '学号', width: 150},
+				{ field: 'StName', title: '学生姓名', width: 150},
+				{ field: 'StGender', title: '学生性别', width: 150 },
+				{ field: 'StBirthday', title: '出生日期', width: 180 },
+			]]
+		});
 		
-			
-			}
 		
+		
+		}
+
 
 		// 字典类型删除事件
 		function deleteStudent(op){
