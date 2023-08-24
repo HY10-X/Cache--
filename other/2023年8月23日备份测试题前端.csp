@@ -24,7 +24,7 @@
             <td>选择性别</td>
 			<td>
 				<select id="loaddataCB" style="width:200px;">
-					<option value="">全部</option>
+					<option value="all">全部</option>
 					<option value="0">男</option>
 					<option value="1">女</option>
 					<option value="2">未知性别</option>
@@ -246,7 +246,7 @@
 			url: $URL,
 			queryParams:{
 				ClassName: 'User.DHCStudentHYX',
-				QueryName: 'GetListByName',
+				QueryName: 'GetListByGender',
 				Gender: selectedValue
 			},
 			columns: [[
