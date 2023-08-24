@@ -524,7 +524,6 @@ ClassMethod GetFrontNameExucet(FrontName As %String) As %String
     Quit $$$OK
 }
 
-
 /// function:编写使用按照性别查询query,使用索引
 /// input:StGender
 /// GetList:入参、GetListExecute：执行，GetListFetch：从执行取数据出参，GetListClose：关闭临时global
@@ -535,12 +534,35 @@ Query GetListByGender(Gender As %String) As %Query(ROWSPEC = "StRowId:%String,St
 
 ClassMethod GetListByGenderExecute(ByRef qHandle As %Binary, Gender As %String) As %Status
 {
+	
+        //性别为空输出所有数据
+    if ($data(^DHCSTUDENTHYX(0,"Gender",Gender))=0){
 	Set repid=$INCREMENT(^CacheTemp)
 	Set ind=1
 	Set StRowId=0
-        quit:($data(^DHCSTUDENTHYX(0,"Gender",Gender))=0) //性别不存在退出
-            s RowId=0
-            for{
+	For{
+		Set StRowId=$ORDER(^DHCSTUDENTHYX(StRowId)) 
+		Quit:StRowId=""
+		Set StNo=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",1)
+		Set StName=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",2)
+		Set StGender=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",3)	///取性别描述
+		Set StBirthday=$PIECE($GET(^DHCSTUDENTHYX(StRowId)),"^",4) 
+		Set:StBirthday'="" StBirthday=$ZDATE(StBirthday,3)
+			///[包含
+			///输出至CacheTemp
+			Set data=$LISTBUILD(StRowId,StNo,StName,StGender,StBirthday)
+			Set ^CacheTemp(repid,ind)=data
+			Set ind=ind+1
+		
+	}
+	} 
+            
+            else{
+	            Set repid=$INCREMENT(^CacheTemp)
+				Set ind=1
+				Set StRowId=0
+	       		s RowId=0
+            	for{
                 s RowId=$o(^DHCSTUDENTHYX(0,"Gender",Gender,RowId)) //获取第一个rowid
                 q:RowId=""
                 s StRowId=RowId
@@ -559,7 +581,10 @@ ClassMethod GetListByGenderExecute(ByRef qHandle As %Binary, Gender As %String) 
 			    Set ind=ind+1
 		
 		}
-                }
+                }    
+	            }
+            
+            
 			
 	
 	
@@ -603,4 +628,5 @@ ClassMethod GetFrontGenderExcute(FrontGender As %String) As %String
     d ##class(%ResultSet).RunQuery("User.DHCStudentHYX","GetListByGender",FrontGender)
     Quit $$$OK
 }
+
 }

@@ -1,123 +1,406 @@
+<!DOCTYPE html>
+
+<csp:method name=OnPreHTTP arguments="" returntype=%Boolean>
+ If ##Class(websys.SessionEvents).SessionExpired() Quit 1
+ Quit 1
+</csp:method>
 <html>
 <head>
-<!--调用点击的js-->
-<script type='text/javascript' src='../scripts/dhceq/stat/dhceqcontractdetail.js'></script>
-
-<HISUI/>
-<!-- Put your page Title here 测试-->
-<title>	 测试 </title>
-
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>学生信息维护</title>
+	<HISUI/>
+	<link rel="stylesheet" type="text/css" href="../scripts/epr/css/fs.common.css">
 </head>
-
-<body>
-
-<div id="tt2" class="hisui-tabs tabs-gray" style="width:500px;height:250px;">   
-	<div title="电子病历" style="padding:20px;">   
-		
-	</div>   
-	<div title="诊断录入" data-options="closable:true" style="overflow:auto;padding:20px;display:none;">   
-		tab2    
-	</div>   
-	<div title="医嘱录入" data-options="closable:true" style="padding:20px;display:none;">   
-		tab3    
-	</div>  
-	<div title="检查列表" data-options="closable:true" style="padding:20px;display:none;">   
-		tab3    
-	</div> 
-	<div title="检验列表" data-options="closable:true" style="padding:20px;display:none;">   
-		tab3    
-	</div> 
-	<div title="危急值列表" data-options="closable:true" style="padding:20px;display:none;">   
-		tab3    
-	</div> 
+<body style="padding:10px;box-sizing:border-box;">
+<!--查询部分-->
+<div style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px"
+			data-options="headerCls:'panel-header-gray',iconCls:'icon-search'">
+	<table cellpadding="5">
+		<tr>
+			<td>按姓名查询</td>
+			<td>
+				<input id="sbyname" href="#" class="hisui-textbox"/>
+			</td>
+            <td>选择性别</td>
+			<td>
+				<select id="loaddataCB" style="width:200px;">
+					<option value="all">全部</option>
+					<option value="0">男</option>
+					<option value="1">女</option>
+					<option value="2">未知性别</option>
+				</select>
+			</td>
+		</tr>				
+	</table>
 </div>
+<!--查询表格-->
+	<div class="hisui-layout layout" data-options="fit:true,border:false">
+		<div data-options="region:'center',border:false">
+			<div class="hisui-panel"  data-options="title:'学生信息维护',iconCls:'icon-paper',headerCls:'panel-header-gray',fit:true" style="border-bottom:1px solid #e2e2e2;border-radius:0;padding:5px;">
+				<div data-options="region:'center',border:false" style="height:95%">
+					<table id="studenttoolbar"></table>
+					<table id="ctsystemTable"></table>
 
-<div class="hisui-panel" title="病人信息" style="width:400px;padding:20px" data-options="headerCls:'panel-header-gray',iconCls:'icon-paper',closable:true,collapsible:true,minimizable:true,maximizable:true"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--编辑框-->
+	<div id="CtSystemDialog" style="width:420px;height:auto;padding:10px;display:none;">
+			<!--RowId输入框，默认隐藏-->
+		<input class="textbox" id="txtRowId" type="hidden" ></input>
+	    <table class="form-table">
+			<tr>
+				<td class="form-r-label">
+					<label for="txtStNo">学生学号</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtStNo" style="width:250px;"></input>
+				</td>
+			</tr>	
+			<tr>
+				<td class="form-r-label">
+					<label for="txtStName">学生姓名</label>
+				</td>
+				<td>
+					<input class="hisui-textbox textbox" id="txtStName" style="width:250px;"></input>
+				</td>
+			</tr>
 
-<div id="tt" class="hisui-accordion" style="width:500px;height:250px;">   
-	<div title="电子病历" style="padding:20px;">   
-		tab1    
-	</div>   
-	<div title="诊断录入" data-options="closable:false" style="overflow:auto;padding:20px;display:none;">   
-		tab2    
-	</div>   
-	<div title="医嘱录入" data-options="closable:false" style="padding:20px;display:none;">   
-		tab3    
+			<tr>
+					<td class="form-r-label">
+						<label for="txtStGender">学生性别</label>
+					</td>
+					<td>
+						<select id="txtStGender" style="width:250px;">
+						<option value="0">男</option>
+						<option value="1">女</option>
+						<option value="2">未知性别</option>
+						</select>
+					</td>
+				</tr>	
+
+			<tr>
+				<td class="form-r-label">
+					<label for="txtStBirthday">出生日期</label>
+				</td>
+				<td>
+					<input id="txtStBirthday" class="hisui-datebox" style="width:256px;"/>
+				</td>
+			</tr>
+		</table>
 	</div>
 
+
+
+	<script language="cache" runat="server">
+		Set userID = %session.Get("LOGON.USERID")
+		Set userLocID = %session.Get("LOGON.CTLOCID")
+	</script>
+	<script type="text/javascript">
+		var userID = '#(userID)#';
+		var userLocID = '#(userLocID)#';
+///function:js文件
+(function (win) {
+		$HUI.datagrid('#studenttoolbar',{
+			toolbar: [
+			{
+				iconCls: 'icon-search',
+				text: '初始化查询调用',
+				handler: function(){
+					initable();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			{
+				iconCls: 'icon-add',
+				text: '新增',
+				handler: function(){
+					editCtSystem("add");
+				}
+			},{
+				iconCls: 'icon-edit',
+				text: '修改',
+				handler: function(){
+					editCtSystem("edit");
+				}
+             },
+			 {
+				iconCls: 'icon-remove',
+				text: '删除',
+				handler: function(){
+					deleteStudent("delete");     //编写删除数据的方法
+				}
+			},
+			 {
+				iconCls: 'icon-search',
+				text: '按照姓名查询',
+				handler: function(){
+					searchStudentByName();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			 {
+				iconCls: 'icon-search',
+				text: '按照性别查询',
+				handler: function(){
+					searchStudentByGender();     //按姓名查询,想办法给getlist返回一个值
+				}
+			},
+			 {
+				iconCls: 'icon-unuse',
+				text: '取消选择',
+				handler: function(){
+					cancelselect();     //编写删除数据的方法
+				}
+			},
+			],
 	
-</div>
-<button  onclick="pwdname()">点击这里</button>  
+		});
+			//初始化表格
+			function initable(){
+			$HUI.datagrid(
+			'#ctsystemTable',{
+			fit: true,
+			border: false,
+			rownumbers: true,
+			singleSelect: true,
+			pagination: true,
+			pageSize: 20,
+			pageList: [10, 20, 50],
+			url: $URL,
+			queryParams:{
+				ClassName: 'User.DHCStudentHYX',
+				QueryName: 'GetListByName'
+			},
+			columns: [[
+				{ field: 'ck', checkbox: true },
+                { field: 'StRowId', title: '序号', width: 150},
+				{ field: 'StNo', title: '学号', width: 150},
+				{ field: 'StName', title: '学生姓名', width: 150},
+				{ field: 'StGender', title: '学生性别', width: 150 },
+				{ field: 'StBirthday', title: '出生日期', width: 180 },
+			]]
+		});
+			
+			}
+
+
+		// 按照姓名查找学生
+		//  点击搜索按钮
+		function searchStudentByName(){
+		//从前端取值
+		var StName = $("#sbyname").val();
+		alert(StName);
+		/*var flg = $m({
+			ClassName:"User.DHCStudentHYX",
+			MethodName:"GetFrontNameExucet",
+			FrontName:StName,
+		},false);*/
+		
+		$HUI.datagrid(
+			'#ctsystemTable',{
+			fit: true,
+			border: false,
+			rownumbers: true,
+			singleSelect: true,
+			pagination: true,
+			pageSize: 20,
+			pageList: [10, 20, 50],
+			url: $URL,
+			queryParams:{
+				ClassName: 'User.DHCStudentHYX',
+				QueryName: 'GetListByName',
+				Name:StName
+			},
+			columns: [[
+				{ field: 'ck', checkbox: true },
+                { field: 'StRowId', title: '序号', width: 150},
+				{ field: 'StNo', title: '学号', width: 150},
+				{ field: 'StName', title: '学生姓名', width: 150},
+				{ field: 'StGender', title: '学生性别', width: 150 },
+				{ field: 'StBirthday', title: '出生日期', width: 180 },
+			]]
+		});
 
 
 
-<script language="javascript">
-	/*  单击按钮alert1
-	$(function(){
-		$('#searchbtn').click(
-		function(){
-			alert(1)
-		})
-		
-		
-		
-		
-		})*/
-	//定义对象
-	function pwdname(){
-	var person1={name:"hyx",sex:"nan"};
-	var person2={name:"zs",sex:"nv"};
-	
-	var personJson={person:[
-	{name:"hyx",sex:"nan"},
-	{name:"lisi",sex:"nv"}
-	]};
-	alert(personJson.person[0].name);
-	//将json对象转换为json字符
-	var personstr=JSON.stringify(personJson);
-	alert(personstr);
-	
-	alert("test");
 
-}
-	
-	//点击监听
-	$(function(){
-	$HUI.tabs("#tt2",{
-		onSelect:function(title){
-			$.messager.popover({type:'info',msg:'切换到【'+title+'】'}); 					
+
 		}
-	});
-});	
+		//性别查找学生
+		function searchStudentByGender(){
+		   
+		var selectBox = document.getElementById("loaddataCB");  
+		var selectedOption = selectBox.options[selectBox.selectedIndex];  
+		var selectedValue = selectedOption.value;  
+		alert(selectedValue);  
+		
+		$HUI.datagrid(
+			'#ctsystemTable',{
+			fit: true,
+			border: false,
+			rownumbers: true,
+			singleSelect: true,
+			pagination: true,
+			pageSize: 20,
+			pageList: [10, 20, 50],
+			url: $URL,
+			queryParams:{
+				ClassName: 'User.DHCStudentHYX',
+				QueryName: 'GetListByGender',
+				Gender: selectedValue
+			},
+			columns: [[
+				{ field: 'ck', checkbox: true },
+                { field: 'StRowId', title: '序号', width: 150},
+				{ field: 'StNo', title: '学号', width: 150},
+				{ field: 'StName', title: '学生姓名', width: 150},
+				{ field: 'StGender', title: '学生性别', width: 150 },
+				{ field: 'StBirthday', title: '出生日期', width: 180 },
+			]]
+		});
+		
+		
+		
+		}
+
+
+		// 字典类型删除事件
+		function deleteStudent(op){
+			var selected = $("#ctsystemTable").datagrid('getSelected');
+			if (( op == "delete")&&(!selected)) {
+				$.messager.alert("提示","请选择一条记录...","info")
+				return false;
+			}
+			//从前端取值
+			$("#txtRowId").val(selected.StRowId);
+			$('#CtSystemDialog').css('display','block');
+			// 学生删除操作，从输入框取值，赋值给新变量继续操作
+			var RowId = $("#txtRowId").val();
+			var flg = $m({
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"DeleteData",
+				StRowId:RowId,
+			},false);
+			
+			if (parseInt(flg) == 0) {
+				$.messager.alert("错误提示", "删除失败!", 'info');
+				return;
+			}else{
+				$.messager.alert("提示", "删除成功!", 'info');
+			}
+		$("#ctsystemTable").datagrid("reload");
+		}
+			//取消选中
+		function cancelselect(){
+			$('#ctsystemTable').datagrid("unselectAll");	
+		}
+
+			
+		// 字典类型新增、修改事件
+		function editCtSystem(op){
+			var selected = $("#ctsystemTable").datagrid('getSelected');
+			if (( op == "edit")&&(!selected)) {
+				$.messager.alert("提示","请选择一条记录...","info")
+				return false;
+			}
+			$('#CtSystemDialog').css('display','block');
+			var _title = "修改学生信息",_icon="icon-w-edit"
+			//如果选中，从选中里获取数据
+			if (op == "add") {
+				_title = "添加学生信息",_icon="icon-w-add";
+				$("#txtRowId").val('');
+				$("#txtStNo").val('');
+				$("#txtStName").val('');
+				$("#txtStGender").val('');
+				$("#txtStBirthday").datebox('setValue','');
+			} else {
+				//根据搜索出的数据取值赋值
+				$("#txtRowId").val(selected.StRowId);
+				$("#txtStNo").val(selected.StNo);
+				$("#txtStName").val(selected.StName);
+				$("#txtStGender").val(selected.StGender);
+				$("#txtStBirthday").datebox('setValue',selected.StBirthday);
+			}
+
+			var CtSystemDialog = $HUI.dialog('#CtSystemDialog', {
+				title: _title,
+				iconCls: _icon,
+				modal: true,
+				minimizable:false,
+				maximizable:false,
+				maximizable:false,
+				collapsible:false,
+				buttons:[{
+					text:'保存',
+					//点击保存调用save方法
+						iconCls:'icon-w-save',
+						handler:function(){
+							saveStudent();
+						}
+				},{
+				text:'关闭',
+				iconCls:'icon-w-close',
+				handler:function(){
+						$('#CtSystemDialog').window("close");
+					}	
+				}]
+			});
+		}
+		
+		// 学生保存操作，从输入框取值，赋值给新变量继续操作
+		function saveStudent(){
+			var RowId = $("#txtRowId").val();
+			var StNo = $("#txtStNo").val();
+			var StName = $("#txtStName").val();
+			var StGender = $("#txtStGender").val();	//转换性别为数字
+			var StBirthday = $("#txtStBirthday").datebox('getValue');
+			if (StNo == '') {
+				$.messager.alert("提示","请填写学生学号...","info")
+				return false;
+			}
+			if (StName == '') {
+				$.messager.alert("提示","请填写学生姓名...","info")
+				return false;
+			}
+			if (StGender == '') {
+			$.messager.alert("提示","请填写学生性别...","info")
+			return false;
+			}
+			if (StBirthday == '') {
+				$.messager.alert("提示","请填写学生出生日期...","info")
+				return false;
+			}
+			var flg = $m({
+				ClassName:"User.DHCStudentHYX",
+				MethodName:"UpdateDataByex",
+				StRowId:RowId,
+				StNo:StNo,
+				StName:StName,
+				StGender:StGender,
+				StBirthday:StBirthday
+				
+			},false);
+			
+			if (parseInt(flg) == 0) {
+				$.messager.alert("错误提示", "保存失败!", 'info');
+				return;
+			}else{
+				$.messager.alert("提示", "保存成功!", 'info');
+			}
+			
+			$('#CtSystemDialog').window("close");
+			$("#ctsystemTable").datagrid("reload");
+
+		}
+		
 	
 	
+}
+(window));
+		
+
+//调用初始化表格成功
 	</script>
 
-
-
-
-
-
-
-<!--a class="hisui-linkbutton" id="searchbtn" data-options="iconCls:'icon-search'">查询按钮</a>
-<a class="hisui-linkbutton" data-options="iconCls:'icon-reset'">重置按钮</a-->
-
-
-	<!--script language="javascript">
-	$(function(){
-		/*$('#searchbtn').click(
-		function(){
-			alert(1)
-		})*/
-		
-		
-		
-		
-		})
-	
-	
-	
-	
-	</script-->
 </body>
 </html>
