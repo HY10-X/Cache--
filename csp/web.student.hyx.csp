@@ -246,7 +246,8 @@
 			url: $URL,
 			queryParams:{
 				ClassName: 'User.DHCStudentHYX',
-				QueryName: 'GetListByName'
+				QueryName: 'GetListByName',
+				Gender: selectedValue
 			},
 			columns: [[
 				{ field: 'ck', checkbox: true },
