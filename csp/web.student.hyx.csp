@@ -190,12 +190,36 @@
 		//从前端取值
 		var StName = $("#sbyname").val();
 		alert(StName);
-		var flg = $m({
+		/*var flg = $m({
 			ClassName:"User.DHCStudentHYX",
 			MethodName:"GetFrontNameExucet",
 			FrontName:StName,
-		},false);
-
+		},false);*/
+		
+		$HUI.datagrid(
+			'#ctsystemTable',{
+			fit: true,
+			border: false,
+			rownumbers: true,
+			singleSelect: true,
+			pagination: true,
+			pageSize: 20,
+			pageList: [10, 20, 50],
+			url: $URL,
+			queryParams:{
+				ClassName: 'User.DHCStudentHYX',
+				QueryName: 'GetListByName',
+				Name:StName
+			},
+			columns: [[
+				{ field: 'ck', checkbox: true },
+                { field: 'StRowId', title: '序号', width: 150},
+				{ field: 'StNo', title: '学号', width: 150},
+				{ field: 'StName', title: '学生姓名', width: 150},
+				{ field: 'StGender', title: '学生性别', width: 150 },
+				{ field: 'StBirthday', title: '出生日期', width: 180 },
+			]]
+		});
 
 
 
